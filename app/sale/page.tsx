@@ -98,8 +98,12 @@ export default function SalePage() {
   ];
 
   return (
-    <div style={{ padding: '40px 20px', maxWidth: '1280px', margin: '0 auto' }}>
-      {/* Sale Banner */}
+    <div style={{ 
+      maxWidth: '1280px', 
+      margin: '0 auto', 
+      padding: '40px 20px'
+    }}>
+      {/* Sale Banner - PHONE KE LIYE PADDING CHANGE */}
       <div style={{ 
         background: 'linear-gradient(135deg, #EF4444, #DC2626)',
         borderRadius: '16px',
@@ -119,12 +123,13 @@ export default function SalePage() {
       {/* Sale by Categories */}
       {saleCategories.map((category) => (
         <div key={category.name} style={{ marginBottom: '50px' }}>
-          {/* Category Header */}
+          {/* Category Header - PHONE KE LIYE FLEX DIRECTION */}
           <div style={{ 
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center',
-            marginBottom: '24px'
+            marginBottom: '24px',
+            flexDirection: 'row' // Desktop pe row, phone pe column
           }}>
             <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: category.color }}>
               {category.name} Sale
@@ -144,11 +149,11 @@ export default function SalePage() {
             </Link>
           </div>
 
-          {/* Products Grid - 5 products */}
+          {/* ✅ Products Grid - PHONE KE LIYE CHHOTA */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-            gap: '24px'
+            gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+            gap: '25px'
           }}>
             {category.products.map((product, index) => {
               // ✅ Generate unique ID for feedback
@@ -168,7 +173,7 @@ export default function SalePage() {
                     position: 'relative'
                   }}
                 >
-                  {/* Product Image */}
+                  {/* Product Image - PHONE KE LIYE HEIGHT CHANGE */}
                   <div style={{
                     height: '200px',
                     backgroundImage: `url(${product.image})`,
@@ -252,18 +257,6 @@ export default function SalePage() {
                         cursor: 'pointer',
                         fontSize: '14px',
                         transition: 'all 0.2s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isAdded) {
-                          e.currentTarget.style.opacity = '0.9';
-                          e.currentTarget.style.transform = 'translateY(-2px)';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isAdded) {
-                          e.currentTarget.style.opacity = '1';
-                          e.currentTarget.style.transform = 'translateY(0)';
-                        }
                       }}
                     >
                       {isAdded ? '✓ Added to Cart' : '🛒 Add to Cart'}

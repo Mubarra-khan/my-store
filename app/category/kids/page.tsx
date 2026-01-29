@@ -1,4 +1,4 @@
-// app/category/kids/page.tsx - WITH CARTPROVIDER - MOBILE RESPONSIVE
+// app/category/kids/page.tsx - WITH CARTPROVIDER - LIGHT GREY CARDS
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -358,29 +358,25 @@ export default function KidsCategory() {
         </div>
       )}
       
-      {/* ✅ Products Grid - MOBILE RESPONSIVE */}
+      {/* ✅ Products Grid - LIGHT GREY CARDS */}
       {filteredProducts.length > 0 ? (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
-          gap: '16px'
+          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+          gap: '25px'
         }}>
           {filteredProducts.map(product => (
             <div key={product.id} style={{
-              background: 'white',
-              borderRadius: '10px',
+              background: '#f8fafc',
+              borderRadius: '12px',
               overflow: 'hidden',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-              transition: 'transform 0.2s',
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%'
+              boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
+              transition: 'transform 0.2s'
             }}>
               <div style={{
-                height: '180px',
+                height: '250px',
                 position: 'relative',
-                background: '#f9fafb',
-                flexShrink: 0
+                background: '#f9fafb'
               }}>
                 {!product.imageError ? (
                   <img 
@@ -401,7 +397,7 @@ export default function KidsCategory() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '32px',
+                    fontSize: '40px',
                     color: '#d1d5db'
                   }}>
                     {product.category === 'Jackets' && '🧥'}
@@ -417,13 +413,13 @@ export default function KidsCategory() {
                 {addedItems[product.id] && (
                   <div style={{
                     position: 'absolute',
-                    top: '8px',
-                    left: '8px',
+                    top: '10px',
+                    left: '10px',
                     background: '#10B981',
                     color: 'white',
-                    fontSize: '9px',
+                    fontSize: '10px',
                     fontWeight: 'bold',
-                    padding: '3px 8px',
+                    padding: '5px 10px',
                     borderRadius: '4px',
                     zIndex: 2
                   }}>
@@ -432,39 +428,15 @@ export default function KidsCategory() {
                 )}
               </div>
               
-              <div style={{ 
-                padding: '12px', 
-                flexGrow: 1,
-                display: 'flex',
-                flexDirection: 'column'
-              }}>
-                <h3 style={{ 
-                  fontSize: '14px', 
-                  fontWeight: '600', 
-                  marginBottom: '6px',
-                  lineHeight: '1.3'
-                }}>
+              <div style={{ padding: '20px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
                   {product.name}
                 </h3>
-                <p style={{ 
-                  color: '#6B7280', 
-                  fontSize: '12px', 
-                  marginBottom: '8px',
-                  flexGrow: 1
-                }}>
+                <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '8px' }}>
                   {product.category}
                 </p>
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  marginTop: 'auto'
-                }}>
-                  <span style={{ 
-                    fontSize: '15px', 
-                    fontWeight: 'bold', 
-                    color: '#10B981' 
-                  }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#10B981' }}>
                     ${product.price}
                   </span>
                   <button 
@@ -473,16 +445,14 @@ export default function KidsCategory() {
                       background: addedItems[product.id] ? '#10B981' : '#10B981',
                       color: 'white',
                       border: 'none',
-                      padding: '6px 12px',
-                      borderRadius: '5px',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
                       fontWeight: '600',
                       cursor: 'pointer',
-                      opacity: addedItems[product.id] ? 0.8 : 1,
-                      fontSize: '13px',
-                      whiteSpace: 'nowrap'
+                      opacity: addedItems[product.id] ? 0.8 : 1
                     }}
                   >
-                    {addedItems[product.id] ? '✓ Added' : 'Add'}
+                    {addedItems[product.id] ? '✓ Added' : 'Add to Cart'}
                   </button>
                 </div>
               </div>
@@ -490,39 +460,28 @@ export default function KidsCategory() {
           ))}
         </div>
       ) : (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '40px 16px', 
-          color: '#6b7280' 
-        }}>
-          <div style={{ fontSize: '40px', marginBottom: '16px' }}>
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
+          <div style={{ fontSize: '48px', marginBottom: '20px' }}>
             {selectedGender === 'boys' ? '👦' : selectedGender === 'girls' ? '👧' : '👶'}
           </div>
-          <h3 style={{ 
-            fontSize: '18px', 
-            marginBottom: '8px',
-            fontWeight: '600'
-          }}>
+          <h3 style={{ fontSize: '20px', marginBottom: '10px' }}>
             No products found
           </h3>
-          <p style={{ fontSize: '14px' }}>
-            Try changing gender or category filters.
-          </p>
+          <p>Try changing gender or category filters.</p>
           <button
             onClick={() => {
               setSelectedCategory(null);
               setSelectedGender('all');
             }}
             style={{
-              marginTop: '16px',
+              marginTop: '20px',
               padding: '10px 20px',
               background: '#10B981',
               color: 'white',
               border: 'none',
               borderRadius: '6px',
               cursor: 'pointer',
-              fontWeight: '600',
-              fontSize: '14px'
+              fontWeight: '600'
             }}
           >
             Show All Products

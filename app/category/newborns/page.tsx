@@ -1,4 +1,4 @@
-// app/category/newborns/page.tsx - MOBILE RESPONSIVE
+// app/category/newborns/page.tsx - EXACTLY KIDS PAGE KI TARAH CARD SIZES
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -168,29 +168,26 @@ export default function NewbornsCategory() {
       
       {/* ✅ No Category Filter Buttons Needed (Sirf 1 category) */}
       
-      {/* Products Grid - MOBILE RESPONSIVE */}
+      {/* ✅ Products Grid - EXACTLY KIDS PAGE KI TARAH */}
       {filteredProducts.length > 0 ? (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
-          gap: '16px'
+          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+          gap: '25px'
         }}>
           {filteredProducts.map(product => (
             <div key={product.id} style={{
               background: 'white',
-              borderRadius: '10px',
+              borderRadius: '12px',
               overflow: 'hidden',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
               border: '2px solid #FBBF2420',
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%'
+              transition: 'transform 0.2s'
             }}>
               <div style={{
-                height: '180px',
+                height: '250px',
                 position: 'relative',
-                background: '#FFFBEB',
-                flexShrink: 0
+                background: '#FFFBEB'
               }}>
                 {!product.imageError ? (
                   <img 
@@ -201,7 +198,7 @@ export default function NewbornsCategory() {
                       height: '100%',
                       objectFit: 'contain',
                       objectPosition: 'center',
-                      padding: '8px'
+                      padding: '10px'
                     }}
                     onError={() => handleImageError(product.id)}
                   />
@@ -213,34 +210,28 @@ export default function NewbornsCategory() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '32px',
+                    fontSize: '40px',
                     color: '#FBBF24',
                     background: '#FFFBEB'
                   }}>
                     <div>👗</div>
-                    <div style={{ 
-                      fontSize: '12px', 
-                      marginTop: '6px', 
-                      color: '#92400E',
-                      textAlign: 'center',
-                      padding: '0 8px'
-                    }}>
+                    <div style={{ fontSize: '14px', marginTop: '10px', color: '#92400E' }}>
                       Baby Dress
                     </div>
                   </div>
                 )}
                 
-                {/* 👈 ADDED: Added to Cart Badge - SMALLER FOR MOBILE */}
+                {/* 👈 ADDED: Added to Cart Badge */}
                 {addedItems[product.id] && (
                   <div style={{
                     position: 'absolute',
-                    top: '8px',
-                    left: '8px',
+                    top: '10px',
+                    left: '10px',
                     background: '#F59E0B',
                     color: 'white',
-                    fontSize: '9px',
+                    fontSize: '10px',
                     fontWeight: 'bold',
-                    padding: '3px 8px',
+                    padding: '5px 10px',
                     borderRadius: '4px',
                     zIndex: 2
                   }}>
@@ -249,76 +240,62 @@ export default function NewbornsCategory() {
                 )}
               </div>
               
-              <div style={{ 
-                padding: '12px', 
-                flexGrow: 1,
-                display: 'flex',
-                flexDirection: 'column'
-              }}>
+              <div style={{ padding: '20px' }}>
                 <h3 style={{ 
-                  fontSize: '14px', 
+                  fontSize: '16px', 
                   fontWeight: '600', 
-                  marginBottom: '6px',
-                  color: '#1f2937',
-                  lineHeight: '1.3'
+                  marginBottom: '8px',
+                  color: '#1f2937'
                 }}>
                   {product.name}
                 </h3>
-                <div style={{ 
-                  marginBottom: '12px',
-                  flexGrow: 1
+                <p style={{ 
+                  color: '#6B7280', 
+                  fontSize: '14px', 
+                  marginBottom: '12px'
                 }}>
                   <span style={{ 
                     background: '#FEF3C7', 
                     color: '#92400E', 
-                    padding: '3px 8px', 
+                    padding: '4px 10px', 
                     borderRadius: '10px',
-                    fontSize: '11px',
-                    display: 'inline-block'
+                    fontSize: '12px'
                   }}>
-                    Size: 0-6M
+                    Size: 0-6 Months
                   </span>
-                </div>
+                </p>
                 <div style={{ 
                   display: 'flex', 
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   borderTop: '1px solid #F3F4F6',
-                  paddingTop: '12px',
-                  marginTop: 'auto'
+                  paddingTop: '15px'
                 }}>
                   <div>
                     <span style={{ 
-                      fontSize: '15px', 
+                      fontSize: '18px', 
                       fontWeight: 'bold', 
                       color: '#92400E' 
                     }}>
                       ${product.price}
                     </span>
-                    <div style={{ 
-                      fontSize: '11px', 
-                      color: '#9CA3AF',
-                      marginTop: '2px'
-                    }}>
+                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>
                       Free Shipping
                     </div>
                   </div>
                   <button 
                     onClick={() => handleAddToCart(product)} // 👈 ADDED: onClick handler
                     style={{
-                      background: addedItems[product.id] ? '#10B981' : '#FBBF24',
+                      background: addedItems[product.id] ? '#10B981' : '#FBBF24', // 👈 UPDATED: Color change on add
                       color: addedItems[product.id] ? 'white' : '#92400E',
                       border: 'none',
-                      padding: '6px 12px',
-                      borderRadius: '5px',
+                      padding: '8px 16px',
+                      borderRadius: '6px',
                       fontWeight: '600',
-                      cursor: 'pointer',
-                      fontSize: '13px',
-                      whiteSpace: 'nowrap',
-                      minWidth: '70px'
+                      cursor: 'pointer'
                     }}
                   >
-                    {addedItems[product.id] ? '✓ Added' : 'Add'} {/* 👈 UPDATED: Shorter text for mobile */}
+                    {addedItems[product.id] ? '✓ Added' : 'Add to Cart'} {/* 👈 UPDATED: Text change */}
                   </button>
                 </div>
               </div>
@@ -326,42 +303,29 @@ export default function NewbornsCategory() {
           ))}
         </div>
       ) : (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '40px 16px', 
-          color: '#6b7280' 
-        }}>
-          <div style={{ 
-            fontSize: '40px', 
-            marginBottom: '16px' 
-          }}>
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
+          <div style={{ fontSize: '48px', marginBottom: '20px' }}>
             👶
           </div>
-          <h3 style={{ 
-            fontSize: '18px', 
-            marginBottom: '8px',
-            fontWeight: '600'
-          }}>
+          <h3 style={{ fontSize: '20px', marginBottom: '10px' }}>
             No baby products found
           </h3>
-          <p style={{ fontSize: '14px' }}>
-            Check back soon for newborn essentials!
-          </p>
+          <p>Check back soon for newborn essentials!</p>
         </div>
       )}
       
-      {/* Newborns Tips Section - MOBILE RESPONSIVE */}
+      {/* Newborns Tips Section */}
       <div style={{
-        marginTop: '40px',
-        padding: '20px 16px',
+        marginTop: '50px',
+        padding: '25px',
         background: '#FFFBEB',
         borderRadius: '12px',
         borderLeft: '5px solid #FBBF24'
       }}>
         <h3 style={{ 
-          fontSize: '16px', 
+          fontSize: '18px', 
           fontWeight: 'bold', 
-          marginBottom: '12px',
+          marginBottom: '15px',
           color: '#92400E',
           display: 'flex',
           alignItems: 'center',
@@ -371,20 +335,20 @@ export default function NewbornsCategory() {
         </h3>
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
-          gap: '12px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gap: '15px',
           color: '#92400E'
         }}>
-          <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
+          <div style={{ fontSize: '14px' }}>
             <strong>Soft Fabrics:</strong> 100% cotton for sensitive skin
           </div>
-          <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
+          <div style={{ fontSize: '14px' }}>
             <strong>Easy Dressing:</strong> Snap buttons for quick changes
           </div>
-          <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
+          <div style={{ fontSize: '14px' }}>
             <strong>Size Guide:</strong> 0-3M, 3-6M, 6-9M available
           </div>
-          <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
+          <div style={{ fontSize: '14px' }}>
             <strong>Machine Washable:</strong> Easy care for busy parents
           </div>
         </div>
