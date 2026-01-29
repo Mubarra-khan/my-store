@@ -17,7 +17,7 @@ const Categories = () => {
       description: "Hoodies, Jackets, Shirts, Suits, Trousers, T-Shirts",
       count: "200+ Products",
       color: "#3B82F6",
-      image: "/categories/men-banner.jpg"
+      image: "/categories/hoodie-banner.jpg"
     },
     {
       title: "Women", 

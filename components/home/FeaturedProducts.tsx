@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { useCart } from '@/components/providers/CartProvider'; // ✅ CHANGE 1: Import CartProvider
+import { useCart } from '@/components/providers/CartProvider';
 
 const FeaturedProducts = () => {
   const [wishlist, setWishlist] = useState<number[]>([]);
@@ -9,8 +9,7 @@ const FeaturedProducts = () => {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [addedItems, setAddedItems] = useState<{[key: number]: boolean}>({});
 
-  // ✅ CHANGE 2: Remove local cart state and use CartProvider
-  const { addToCart, cart } = useCart(); // ✅ CartProvider se cart lein
+  const { addToCart, cart } = useCart();
 
   const products = [
     {
@@ -115,20 +114,6 @@ const FeaturedProducts = () => {
     }
   ];
 
-  // ✅ CHANGE 3: Remove these useEffect for local storage (CartProvider handle karega)
-  /*
-  useEffect(() => {
-    const savedCart = localStorage.getItem('featuredCart');
-    if (savedCart) {
-      setCart(JSON.parse(savedCart));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('featuredCart', JSON.stringify(cart));
-  }, [cart]);
-  */
-
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentHoverIndex((prevIndex) => (prevIndex + 1) % products.length);
@@ -154,10 +139,8 @@ const FeaturedProducts = () => {
     }
   };
 
-  // ✅ CHANGE 4: Update handleAddToCart to use CartProvider
   const handleAddToCart = (product: any) => {
     try {
-      // CartProvider ka addToCart use karein
       addToCart({
         id: product.id,
         name: product.name,
@@ -167,15 +150,12 @@ const FeaturedProducts = () => {
         gender: product.gender
       });
       
-      // Show feedback
       setAddedItems(prev => ({ ...prev, [product.id]: true }));
       
-      // Reset after 2 seconds
       setTimeout(() => {
         setAddedItems(prev => ({ ...prev, [product.id]: false }));
       }, 2000);
       
-      // Show success message
       alert(`✓ ${product.name} added to cart!`);
       
     } catch (error) {
@@ -237,7 +217,7 @@ const FeaturedProducts = () => {
             </p>
           </div>
 
-          {/* Products Grid - Smaller Cards */}
+          {/* Products Grid - Lighter Cards */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
@@ -247,20 +227,39 @@ const FeaturedProducts = () => {
               <div 
                 key={product.id}
                 style={{
-                  background: 'white',
+                  background: '#FFFFFF', // ✅ CHANGED: Same white for all
                   borderRadius: '12px',
                   overflow: 'hidden',
-                  boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.04)', // ✅ CHANGED: Lighter shadow
                   transition: 'all 0.3s ease',
                   position: 'relative',
                   height: '380px',
                   display: 'flex',
                   flexDirection: 'column',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  border: '1px solid #F1F5F9', // ✅ CHANGED: Light border
+                  borderLeft: `3px solid ${getGenderColor(product.gender)}` // ✅ CHANGED: Thinner border (5px to 3px)
                 }}
                 onMouseEnter={() => setCurrentHoverIndex(index)}
                 onMouseLeave={() => {}}
               >
+                {/* Gender Badge - Lighter */}
+                <div style={{
+                  position: 'absolute',
+                  top: '10px',
+                  left: '10px',
+                  background: getGenderColor(product.gender),
+                  color: 'white',
+                  fontSize: '9px', // ✅ CHANGED: Smaller
+                  fontWeight: 'bold',
+                  padding: '3px 8px', // ✅ CHANGED: Smaller padding
+                  borderRadius: '3px', // ✅ CHANGED: Smaller radius
+                  zIndex: 3,
+                  opacity: 0.9 // ✅ ADDED: Slightly transparent
+                }}>
+                  {product.gender?.toUpperCase()}
+                </div>
+
                 {/* Hover Border Effect */}
                 <div 
                   style={{
@@ -270,19 +269,20 @@ const FeaturedProducts = () => {
                     right: 0,
                     bottom: 0,
                     borderRadius: '12px',
-                    border: currentHoverIndex === index ? `2px solid ${getGenderColor(product.gender)}` : '1px solid transparent',
+                    border: currentHoverIndex === index ? `1px solid ${getGenderColor(product.gender)}` : '1px solid transparent',
                     transition: 'all 0.3s ease',
                     pointerEvents: 'none',
                     zIndex: 1
                   }}
                 />
 
-                {/* Product Image - Smaller */}
+                {/* Product Image */}
                 <div style={{
                   height: '200px',
                   position: 'relative',
                   overflow: 'hidden',
-                  background: '#F1F5F9'
+                  background: '#F9FAFB', // ✅ CHANGED: Lighter
+                  borderBottom: '1px solid #F3F4F6' // ✅ CHANGED: Lighter border
                 }}>
                   <div 
                     style={{
@@ -295,8 +295,8 @@ const FeaturedProducts = () => {
                       position: 'absolute',
                       top: 0,
                       left: 0,
-                      transform: currentHoverIndex === index ? 'scale(1.05)' : 'scale(1)',
-                      transition: 'transform 0.4s ease'
+                      transform: currentHoverIndex === index ? 'scale(1.03)' : 'scale(1)', // ✅ CHANGED: Less zoom
+                      transition: 'transform 0.3s ease'
                     }}
                     onError={handleImageError}
                   />
@@ -311,26 +311,26 @@ const FeaturedProducts = () => {
                       position: 'absolute',
                       top: '8px',
                       right: '8px',
-                      background: 'white',
-                      border: 'none',
-                      width: '32px',
-                      height: '32px',
+                      background: 'rgba(255, 255, 255, 0.9)', // ✅ CHANGED: Slightly transparent
+                      border: '1px solid #E5E7EB',
+                      width: '30px', // ✅ CHANGED: Smaller
+                      height: '30px',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '16px',
+                      fontSize: '14px', // ✅ CHANGED: Smaller
                       cursor: 'pointer',
-                      boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+                      boxShadow: '0 1px 5px rgba(0,0,0,0.05)', // ✅ CHANGED: Lighter shadow
                       zIndex: 3,
-                      transform: currentHoverIndex === index ? 'scale(1.1)' : 'scale(1)',
-                      transition: 'all 0.3s ease'
+                      transform: currentHoverIndex === index ? 'scale(1.05)' : 'scale(1)', // ✅ CHANGED: Less scale
+                      transition: 'all 0.2s ease'
                     }}
                   >
                     {wishlist.includes(product.id) ? '❤️' : '🤍'}
                   </button>
                   
-                  {/* Added to Cart Badge */}
+                  {/* Added to Cart Badge - Lighter */}
                   {addedItems[product.id] && (
                     <div style={{
                       position: 'absolute',
@@ -338,10 +338,10 @@ const FeaturedProducts = () => {
                       left: '8px',
                       background: '#10B981',
                       color: 'white',
-                      fontSize: '10px',
+                      fontSize: '9px', // ✅ CHANGED: Smaller
                       fontWeight: 'bold',
-                      padding: '4px 8px',
-                      borderRadius: '4px',
+                      padding: '3px 6px', // ✅ CHANGED: Smaller padding
+                      borderRadius: '3px', // ✅ CHANGED: Smaller radius
                       zIndex: 3,
                       animation: 'pulseBorder 2s infinite'
                     }}>
@@ -350,7 +350,7 @@ const FeaturedProducts = () => {
                   )}
                 </div>
 
-                {/* Product Info - Smaller */}
+                {/* Product Info */}
                 <div style={{ 
                   padding: '16px', 
                   flex: 1, 
@@ -380,7 +380,7 @@ const FeaturedProducts = () => {
                     </h3>
                   </div>
 
-                  {/* Rating - Smaller */}
+                  {/* Rating */}
                   <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -403,7 +403,7 @@ const FeaturedProducts = () => {
                     </span>
                   </div>
 
-                  {/* Price & Actions - Smaller */}
+                  {/* Price & Actions */}
                   <div style={{ 
                     display: 'flex', 
                     justifyContent: 'space-between',
@@ -418,6 +418,11 @@ const FeaturedProducts = () => {
                       }}>
                         ${product.price.toFixed(2)}
                       </span>
+                      <div style={{ fontSize: '12px', color: '#9CA3AF' }}> {/* ✅ CHANGED: Lighter color */}
+                        {product.gender === 'men' ? "Men's" : 
+                         product.gender === 'women' ? "Women's" : 
+                         product.gender === 'kids' ? "Kids" : "Product"}
+                      </div>
                     </div>
                     <button 
                       onClick={(e) => {
@@ -430,8 +435,8 @@ const FeaturedProducts = () => {
                           : 'linear-gradient(135deg, #8B5CF6, #EC4899)',
                         color: 'white',
                         border: 'none',
-                        padding: '8px 16px',
-                        borderRadius: '6px',
+                        padding: '7px 14px', // ✅ CHANGED: Smaller padding
+                        borderRadius: '5px', // ✅ CHANGED: Smaller radius
                         fontWeight: 'bold',
                         cursor: 'pointer',
                         fontSize: '12px',
@@ -439,8 +444,8 @@ const FeaturedProducts = () => {
                       }}
                       onMouseEnter={(e) => {
                         if (!addedItems[product.id]) {
-                          e.currentTarget.style.transform = 'scale(1.05)';
-                          e.currentTarget.style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.3)';
+                          e.currentTarget.style.transform = 'scale(1.03)';
+                          e.currentTarget.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.2)';
                         }
                       }}
                       onMouseLeave={(e) => {

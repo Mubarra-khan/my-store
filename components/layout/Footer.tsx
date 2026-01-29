@@ -10,7 +10,7 @@ const Footer = () => {
         
         {/* Newsletter */}
         <div style={{ 
-          background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)',
+          background: 'linear-gradient(135deg, #351b96 0%, #d85295 100%)',
           borderRadius: '16px',
           padding: '40px',
           marginBottom: '60px',

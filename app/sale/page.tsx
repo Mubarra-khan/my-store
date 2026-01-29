@@ -1,6 +1,50 @@
+"use client"; // ✅ ADDED: "use client" directive
+
 import Link from 'next/link';
+import { useCart } from '@/components/providers/CartProvider'; // ✅ ADDED: CartProvider import
+import { useState } from 'react'; // ✅ ADDED: For feedback state
 
 export default function SalePage() {
+  // ✅ ADDED: Cart hook and feedback state
+  const { addToCart } = useCart();
+  const [addedItems, setAddedItems] = useState<{[key: string]: boolean}>({});
+
+  // ✅ ADDED: Handle add to cart function
+  const handleAddToCart = (product: any, category: string) => {
+    try {
+      // Generate unique ID for each product
+      const productId = `${category.toLowerCase()}_${product.name.toLowerCase().replace(/\s+/g, '_')}`;
+      
+      // Parse price (remove $ and convert to number)
+      const price = parseFloat(product.price.replace('$', ''));
+      
+      // Add to cart
+      addToCart({
+        id: Date.now() + Math.random(), // Unique ID
+        name: product.name,
+        price: price,
+        image: product.image,
+        category: category,
+        gender: category.toLowerCase()
+      });
+      
+      // Show feedback
+      setAddedItems(prev => ({ ...prev, [productId]: true }));
+      
+      // Reset feedback after 2 seconds
+      setTimeout(() => {
+        setAddedItems(prev => ({ ...prev, [productId]: false }));
+      }, 2000);
+      
+      // Show success message
+      alert(`✓ ${product.name} added to cart!`);
+      
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Could not add item to cart. Please try again.');
+    }
+  };
+
   // ✅ Exact image paths based on your structure
   const saleCategories = [
     {
@@ -106,79 +150,148 @@ export default function SalePage() {
             gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
             gap: '24px'
           }}>
-            {category.products.map((product, index) => (
-              <Link
-                key={index}
-                href={`/product/${product.name.toLowerCase().replace(/\s+/g, '-')}`}
-                style={{
-                  background: 'white',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  textDecoration: 'none',
-                  color: '#1F2937',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-                  transition: 'transform 0.3s ease'
-                }}
-              >
-                {/* Product Image */}
-                <div style={{
-                  height: '200px',
-                  backgroundImage: `url(${product.image})`,
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                  position: 'relative'
-                }}>
-                  {/* Discount Badge */}
+            {category.products.map((product, index) => {
+              // ✅ Generate unique ID for feedback
+              const productId = `${category.name.toLowerCase()}_${product.name.toLowerCase().replace(/\s+/g, '_')}`;
+              const isAdded = addedItems[productId];
+              
+              return (
+                <div
+                  key={index}
+                  style={{
+                    background: 'white',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    color: '#1F2937',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                    transition: 'transform 0.3s ease',
+                    position: 'relative'
+                  }}
+                >
+                  {/* Product Image */}
                   <div style={{
-                    position: 'absolute',
-                    top: '12px',
-                    right: '12px',
-                    background: '#EF4444',
-                    color: 'white',
-                    padding: '6px 12px',
-                    borderRadius: '20px',
-                    fontSize: '14px',
-                    fontWeight: 'bold'
+                    height: '200px',
+                    backgroundImage: `url(${product.image})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    position: 'relative'
                   }}>
-                    {product.discount}
-                  </div>
-                </div>
-
-                {/* Product Info */}
-                <div style={{ padding: '16px' }}>
-                  <h3 style={{ 
-                    fontSize: '16px', 
-                    fontWeight: '600',
-                    marginBottom: '8px'
-                  }}>
-                    {product.name}
-                  </h3>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#EF4444' }}>
-                      {product.price}
-                    </span>
-                    <span style={{
+                    {/* Discount Badge */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '12px',
+                      right: '12px',
+                      background: '#EF4444',
+                      color: 'white',
+                      padding: '6px 12px',
+                      borderRadius: '20px',
                       fontSize: '14px',
-                      color: '#6B7280',
-                      textDecoration: 'line-through'
+                      fontWeight: 'bold'
                     }}>
-                      {/* Original prices based on discount */}
-                      {product.discount === '50% off' ? `$${(parseFloat(product.price.replace('$', '')) * 2).toFixed(2)}` :
-                       product.discount === '40% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.6).toFixed(2)}` :
-                       product.discount === '35% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.65).toFixed(2)}` :
-                       product.discount === '30% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.7).toFixed(2)}` :
-                       product.discount === '25% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.75).toFixed(2)}` :
-                       product.discount === '20% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.8).toFixed(2)}` : ''}
-                    </span>
+                      {product.discount}
+                    </div>
+
+                    {/* ✅ ADDED: Added to Cart Badge */}
+                    {isAdded && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '12px',
+                        left: '12px',
+                        background: '#10B981',
+                        color: 'white',
+                        padding: '6px 12px',
+                        borderRadius: '20px',
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                        zIndex: 2
+                      }}>
+                        ✓ Added
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Product Info */}
+                  <div style={{ padding: '16px' }}>
+                    <h3 style={{ 
+                      fontSize: '16px', 
+                      fontWeight: '600',
+                      marginBottom: '8px'
+                    }}>
+                      {product.name}
+                    </h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                      <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#EF4444' }}>
+                        {product.price}
+                      </span>
+                      <span style={{
+                        fontSize: '14px',
+                        color: '#6B7280',
+                        textDecoration: 'line-through'
+                      }}>
+                        {/* Original prices based on discount */}
+                        {product.discount === '50% off' ? `$${(parseFloat(product.price.replace('$', '')) * 2).toFixed(2)}` :
+                         product.discount === '40% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.6).toFixed(2)}` :
+                         product.discount === '35% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.65).toFixed(2)}` :
+                         product.discount === '30% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.7).toFixed(2)}` :
+                         product.discount === '25% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.75).toFixed(2)}` :
+                         product.discount === '20% off' ? `$${(parseFloat(product.price.replace('$', '')) / 0.8).toFixed(2)}` : ''}
+                      </span>
+                    </div>
+
+                    {/* ✅ ADDED: Add to Cart Button */}
+                    <button 
+                      onClick={() => handleAddToCart(product, category.name)}
+                      style={{
+                        width: '100%',
+                        padding: '10px',
+                        background: isAdded ? '#10B981' : category.color,
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (!isAdded) {
+                          e.currentTarget.style.opacity = '0.9';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (!isAdded) {
+                          e.currentTarget.style.opacity = '1';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }
+                      }}
+                    >
+                      {isAdded ? '✓ Added to Cart' : '🛒 Add to Cart'}
+                    </button>
                   </div>
                 </div>
-              </Link>
-            ))}
+              );
+            })}
           </div>
         </div>
       ))}
 
-       
+      {/* ✅ ADDED: Sale Tips Section */}
+      <div style={{
+        marginTop: '50px',
+        padding: '30px',
+        background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)',
+        borderRadius: '16px',
+        textAlign: 'center'
+      }}>
+        <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', color: '#92400E' }}>
+          🎉 Flash Sale Tips
+        </h3>
+        <p style={{ color: '#92400E', fontSize: '16px', maxWidth: '800px', margin: '0 auto' }}>
+          Add items to cart quickly! Sale prices are limited and items sell out fast. 
+          Don't miss your chance to save up to 70% on premium products.
+        </p>
+      </div>
     </div>
   );
 }

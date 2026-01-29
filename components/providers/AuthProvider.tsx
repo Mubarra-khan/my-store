@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect } from 'react'; // ✅ CHANGED: useEffect add karein
 
 interface User {
   id: string;
@@ -82,13 +82,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Check localStorage on initial load
-  useState(() => {
+  // ✅ CHANGED: useState se useEffect mein badlein
+  useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
-  });
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, login, logout, signup, isLoading }}>
