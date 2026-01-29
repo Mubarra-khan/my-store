@@ -1,4 +1,4 @@
-// app/category/men/page.tsx
+// app/category/men/page.tsx - MOBILE RESPONSIVE
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -154,29 +154,46 @@ export default function MenCategory() {
       });
 
   return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 20px' }}>
-      <h1 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '10px' }}>
-         Men's Collection
+    <div style={{ 
+      maxWidth: '1280px', 
+      margin: '0 auto', 
+      padding: '20px 16px',
+      width: '100%',
+      boxSizing: 'border-box'
+    }}>
+      <h1 style={{ 
+        fontSize: 'clamp(24px, 5vw, 36px)', 
+        fontWeight: 'bold', 
+        marginBottom: '8px',
+        textAlign: 'center'
+      }}>
+        Men's Collection
       </h1>
-      <p style={{ color: '#6B7280', marginBottom: '40px' }}>
+      <p style={{ 
+        color: '#6B7280', 
+        marginBottom: '32px',
+        fontSize: 'clamp(14px, 3vw, 16px)',
+        textAlign: 'center'
+      }}>
         Premium clothing for men - Jackets, T-Shirts, Shirts, Hoodies, Suits & Trousers
       </p>
       
-      {/* Category Filter Buttons */}
+      {/* Category Filter Buttons - MOBILE RESPONSIVE */}
       <div style={{ 
         display: 'flex', 
         flexWrap: 'wrap', 
-        gap: '10px', 
-        marginBottom: '30px',
+        gap: '8px', 
+        marginBottom: '24px',
         paddingBottom: '20px',
-        borderBottom: '1px solid #e5e7eb'
+        borderBottom: '1px solid #e5e7eb',
+        justifyContent: 'center'
       }}>
         {categories.map(cat => (
           <button
             key={cat}
             onClick={() => setSelectedCategory(cat === "All" ? null : cat)}
             style={{
-              padding: '10px 20px',
+              padding: '8px 14px',
               borderRadius: '25px',
               border: '1px solid #d1d5db',
               background: selectedCategory === cat || (cat === "All" && !selectedCategory) 
@@ -187,7 +204,11 @@ export default function MenCategory() {
                 : '#374151',
               fontWeight: '600',
               cursor: 'pointer',
-              transition: 'all 0.2s'
+              transition: 'all 0.2s',
+              fontSize: '13px',
+              whiteSpace: 'nowrap',
+              minWidth: '80px',
+              textAlign: 'center'
             }}
           >
             {cat} {cat !== "All" && `(${products.filter(p => p.category === cat).length})`}
@@ -195,40 +216,63 @@ export default function MenCategory() {
         ))}
       </div>
       
-      {/* ✅ Show which category is active */}
+      {/* ✅ Show which category is active - MOBILE RESPONSIVE */}
       {selectedCategory && selectedCategory !== "All" && (
-        <div style={{ marginBottom: '30px' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '5px' }}>
+        <div style={{ 
+          marginBottom: '24px', 
+          padding: '16px',
+          background: '#f8fafc',
+          borderRadius: '10px',
+          textAlign: 'center'
+        }}>
+          <h2 style={{ 
+            fontSize: '18px', 
+            fontWeight: 'bold', 
+            marginBottom: '4px' 
+          }}>
             {selectedCategory} 
-            <span style={{ color: '#6B7280', fontSize: '16px', marginLeft: '10px' }}>
+            <span style={{ 
+              color: '#6B7280', 
+              fontSize: '14px', 
+              marginLeft: '8px',
+              fontWeight: 'normal'
+            }}>
               ({filteredProducts.length} products)
             </span>
           </h2>
-          <p style={{ color: '#3B82F6', fontSize: '14px' }}>
-            URL Query: {queryCategory} | Active Filter: {selectedCategory}
+          <p style={{ 
+            color: '#3B82F6', 
+            fontSize: '12px',
+            marginTop: '4px'
+          }}>
+            Active Filter: {selectedCategory}
           </p>
         </div>
       )}
       
-      {/* Products Grid */}
+      {/* Products Grid - MOBILE RESPONSIVE */}
       {filteredProducts.length > 0 ? (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-          gap: '25px'
+          gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+          gap: '16px'
         }}>
           {filteredProducts.map(product => (
             <div key={product.id} style={{
               background: 'white',
-              borderRadius: '12px',
+              borderRadius: '10px',
               overflow: 'hidden',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.08)'
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%'
             }}>
               <div style={{
-                height: '250px',
+                height: '180px',
                 position: 'relative',
                 overflow: 'hidden',
-                background: '#f9fafb'
+                background: '#f9fafb',
+                flexShrink: 0
               }}>
                 {!product.imageError ? (
                   <img 
@@ -249,7 +293,7 @@ export default function MenCategory() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '40px',
+                    fontSize: '32px',
                     color: '#d1d5db'
                   }}>
                     {product.category === 'Jackets' && '🧥'}
@@ -261,17 +305,17 @@ export default function MenCategory() {
                   </div>
                 )}
                 
-                {/* Added to Cart Badge */}
+                {/* Added to Cart Badge - SMALLER FOR MOBILE */}
                 {addedItems[product.id] && (
                   <div style={{
                     position: 'absolute',
-                    top: '10px',
-                    left: '10px',
+                    top: '8px',
+                    left: '8px',
                     background: '#10B981',
                     color: 'white',
-                    fontSize: '10px',
+                    fontSize: '9px',
                     fontWeight: 'bold',
-                    padding: '5px 10px',
+                    padding: '3px 8px',
                     borderRadius: '4px',
                     zIndex: 2
                   }}>
@@ -280,15 +324,39 @@ export default function MenCategory() {
                 )}
               </div>
               
-              <div style={{ padding: '20px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
+              <div style={{ 
+                padding: '12px', 
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <h3 style={{ 
+                  fontSize: '14px', 
+                  fontWeight: '600', 
+                  marginBottom: '6px',
+                  lineHeight: '1.3'
+                }}>
                   {product.name}
                 </h3>
-                <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '8px' }}>
-                  Category: {product.category}
+                <p style={{ 
+                  color: '#6B7280', 
+                  fontSize: '12px', 
+                  marginBottom: '8px',
+                  flexGrow: 1
+                }}>
+                  {product.category}
                 </p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '18px', fontWeight: 'bold' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  marginTop: 'auto'
+                }}>
+                  <span style={{ 
+                    fontSize: '15px', 
+                    fontWeight: 'bold',
+                    color: '#111827'
+                  }}>
                     ${product.price}
                   </span>
                   <button 
@@ -297,13 +365,15 @@ export default function MenCategory() {
                       background: addedItems[product.id] ? '#10B981' : '#111827',
                       color: 'white',
                       border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: '6px',
+                      padding: '6px 12px',
+                      borderRadius: '5px',
                       fontWeight: '600',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      whiteSpace: 'nowrap'
                     }}
                   >
-                    {addedItems[product.id] ? '✓ Added' : 'Add to Cart'}
+                    {addedItems[product.id] ? '✓ Added' : 'Add'}
                   </button>
                 </div>
               </div>
@@ -311,11 +381,40 @@ export default function MenCategory() {
           ))}
         </div>
       ) : (
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
-          <h3 style={{ fontSize: '20px', marginBottom: '10px' }}>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '40px 16px', 
+          color: '#6b7280' 
+        }}>
+          <div style={{ fontSize: '40px', marginBottom: '16px' }}>
+            👨
+          </div>
+          <h3 style={{ 
+            fontSize: '18px', 
+            marginBottom: '8px',
+            fontWeight: '600'
+          }}>
             No products found in "{selectedCategory}"
           </h3>
-          <p>Check the category name in URL and product data.</p>
+          <p style={{ fontSize: '14px' }}>
+            Check the category name in URL and product data.
+          </p>
+          <button
+            onClick={() => setSelectedCategory(null)}
+            style={{
+              marginTop: '16px',
+              padding: '10px 20px',
+              background: '#111827',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontWeight: '600',
+              fontSize: '14px'
+            }}
+          >
+            Show All Products
+          </button>
         </div>
       )}
     </div>

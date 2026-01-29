@@ -1,4 +1,4 @@
-// app/category/newborns/page.tsx
+// app/category/newborns/page.tsx - MOBILE RESPONSIVE
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -103,59 +103,94 @@ export default function NewbornsCategory() {
   const filteredProducts = products; // No filtering needed for newborns
 
   return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 20px' }}>
-      <h1 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '10px' }}>
+    <div style={{ 
+      maxWidth: '1280px', 
+      margin: '0 auto', 
+      padding: '20px 16px',
+      width: '100%',
+      boxSizing: 'border-box'
+    }}>
+      <h1 style={{ 
+        fontSize: 'clamp(24px, 5vw, 36px)', 
+        fontWeight: 'bold', 
+        marginBottom: '8px',
+        textAlign: 'center'
+      }}>
         Newborns Collection
       </h1>
-      <p style={{ color: '#6B7280', marginBottom: '10px' }}>
+      <p style={{ 
+        color: '#6B7280', 
+        marginBottom: '8px',
+        fontSize: 'clamp(14px, 3vw, 16px)',
+        textAlign: 'center'
+      }}>
         Adorable baby dresses for your little ones
       </p>
-      <p style={{ color: '#9CA3AF', fontSize: '14px', marginBottom: '40px' }}>
+      <p style={{ 
+        color: '#9CA3AF', 
+        fontSize: '14px', 
+        marginBottom: '32px',
+        textAlign: 'center'
+      }}>
         {products.length} beautiful baby dresses available
       </p>
       
-      {/* ✅ Simple Stats Card */}
+      {/* ✅ Simple Stats Card - MOBILE RESPONSIVE */}
       <div style={{ 
-        marginBottom: '40px',
-        padding: '20px',
+        marginBottom: '32px',
+        padding: '20px 16px',
         background: 'linear-gradient(135deg, #FBBF24, #F59E0B)',
         borderRadius: '12px',
         color: 'white',
         textAlign: 'center'
       }}>
-        <div style={{ fontSize: '48px', marginBottom: '10px' }}>
-          
+        <div style={{ 
+          fontSize: 'clamp(36px, 8vw, 48px)', 
+          marginBottom: '8px' 
+        }}>
+          👶
         </div>
-        <div style={{ fontSize: '28px', fontWeight: 'bold', marginBottom: '5px' }}>
+        <div style={{ 
+          fontSize: 'clamp(20px, 5vw, 28px)', 
+          fontWeight: 'bold', 
+          marginBottom: '4px' 
+        }}>
           {products.length} Baby Dresses
         </div>
-        <div style={{ fontSize: '14px', opacity: 0.9 }}>
+        <div style={{ 
+          fontSize: '13px', 
+          opacity: 0.9,
+          lineHeight: '1.4'
+        }}>
           Size: 0-6 Months | Soft Cotton | Easy Care
         </div>
       </div>
       
       {/* ✅ No Category Filter Buttons Needed (Sirf 1 category) */}
       
-      {/* Products Grid */}
+      {/* Products Grid - MOBILE RESPONSIVE */}
       {filteredProducts.length > 0 ? (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-          gap: '25px'
+          gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+          gap: '16px'
         }}>
           {filteredProducts.map(product => (
             <div key={product.id} style={{
               background: 'white',
-              borderRadius: '12px',
+              borderRadius: '10px',
               overflow: 'hidden',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
               border: '2px solid #FBBF2420',
-              transition: 'transform 0.2s'
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%'
             }}>
               <div style={{
-                height: '250px',
+                height: '180px',
                 position: 'relative',
-                background: '#FFFBEB'
+                background: '#FFFBEB',
+                flexShrink: 0
               }}>
                 {!product.imageError ? (
                   <img 
@@ -166,7 +201,7 @@ export default function NewbornsCategory() {
                       height: '100%',
                       objectFit: 'contain',
                       objectPosition: 'center',
-                      padding: '10px'
+                      padding: '8px'
                     }}
                     onError={() => handleImageError(product.id)}
                   />
@@ -178,28 +213,34 @@ export default function NewbornsCategory() {
                     flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '40px',
+                    fontSize: '32px',
                     color: '#FBBF24',
                     background: '#FFFBEB'
                   }}>
                     <div>👗</div>
-                    <div style={{ fontSize: '14px', marginTop: '10px', color: '#92400E' }}>
+                    <div style={{ 
+                      fontSize: '12px', 
+                      marginTop: '6px', 
+                      color: '#92400E',
+                      textAlign: 'center',
+                      padding: '0 8px'
+                    }}>
                       Baby Dress
                     </div>
                   </div>
                 )}
                 
-                {/* 👈 ADDED: Added to Cart Badge */}
+                {/* 👈 ADDED: Added to Cart Badge - SMALLER FOR MOBILE */}
                 {addedItems[product.id] && (
                   <div style={{
                     position: 'absolute',
-                    top: '10px',
-                    left: '10px',
+                    top: '8px',
+                    left: '8px',
                     background: '#F59E0B',
                     color: 'white',
-                    fontSize: '10px',
+                    fontSize: '9px',
                     fontWeight: 'bold',
-                    padding: '5px 10px',
+                    padding: '3px 8px',
                     borderRadius: '4px',
                     zIndex: 2
                   }}>
@@ -208,62 +249,76 @@ export default function NewbornsCategory() {
                 )}
               </div>
               
-              <div style={{ padding: '20px' }}>
+              <div style={{ 
+                padding: '12px', 
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
                 <h3 style={{ 
-                  fontSize: '16px', 
+                  fontSize: '14px', 
                   fontWeight: '600', 
-                  marginBottom: '8px',
-                  color: '#1f2937'
+                  marginBottom: '6px',
+                  color: '#1f2937',
+                  lineHeight: '1.3'
                 }}>
                   {product.name}
                 </h3>
-                <p style={{ 
-                  color: '#6B7280', 
-                  fontSize: '14px', 
-                  marginBottom: '12px'
+                <div style={{ 
+                  marginBottom: '12px',
+                  flexGrow: 1
                 }}>
                   <span style={{ 
                     background: '#FEF3C7', 
                     color: '#92400E', 
-                    padding: '4px 10px', 
+                    padding: '3px 8px', 
                     borderRadius: '10px',
-                    fontSize: '12px'
+                    fontSize: '11px',
+                    display: 'inline-block'
                   }}>
-                    Size: 0-6 Months
+                    Size: 0-6M
                   </span>
-                </p>
+                </div>
                 <div style={{ 
                   display: 'flex', 
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   borderTop: '1px solid #F3F4F6',
-                  paddingTop: '15px'
+                  paddingTop: '12px',
+                  marginTop: 'auto'
                 }}>
                   <div>
                     <span style={{ 
-                      fontSize: '18px', 
+                      fontSize: '15px', 
                       fontWeight: 'bold', 
                       color: '#92400E' 
                     }}>
                       ${product.price}
                     </span>
-                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>
+                    <div style={{ 
+                      fontSize: '11px', 
+                      color: '#9CA3AF',
+                      marginTop: '2px'
+                    }}>
                       Free Shipping
                     </div>
                   </div>
                   <button 
                     onClick={() => handleAddToCart(product)} // 👈 ADDED: onClick handler
                     style={{
-                      background: addedItems[product.id] ? '#10B981' : '#FBBF24', // 👈 UPDATED: Color change on add
+                      background: addedItems[product.id] ? '#10B981' : '#FBBF24',
                       color: addedItems[product.id] ? 'white' : '#92400E',
                       border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: '6px',
+                      padding: '6px 12px',
+                      borderRadius: '5px',
                       fontWeight: '600',
-                      cursor: 'pointer'
+                      cursor: 'pointer',
+                      fontSize: '13px',
+                      whiteSpace: 'nowrap',
+                      minWidth: '70px'
                     }}
                   >
-                    {addedItems[product.id] ? '✓ Added' : 'Add to Cart'} {/* 👈 UPDATED: Text change */}
+                    {addedItems[product.id] ? '✓ Added' : 'Add'} {/* 👈 UPDATED: Shorter text for mobile */}
                   </button>
                 </div>
               </div>
@@ -271,52 +326,65 @@ export default function NewbornsCategory() {
           ))}
         </div>
       ) : (
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
-          <div style={{ fontSize: '48px', marginBottom: '20px' }}>
-            
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '40px 16px', 
+          color: '#6b7280' 
+        }}>
+          <div style={{ 
+            fontSize: '40px', 
+            marginBottom: '16px' 
+          }}>
+            👶
           </div>
-          <h3 style={{ fontSize: '20px', marginBottom: '10px' }}>
+          <h3 style={{ 
+            fontSize: '18px', 
+            marginBottom: '8px',
+            fontWeight: '600'
+          }}>
             No baby products found
           </h3>
-          <p>Check back soon for newborn essentials!</p>
+          <p style={{ fontSize: '14px' }}>
+            Check back soon for newborn essentials!
+          </p>
         </div>
       )}
       
-      {/* Newborns Tips Section */}
+      {/* Newborns Tips Section - MOBILE RESPONSIVE */}
       <div style={{
-        marginTop: '50px',
-        padding: '25px',
+        marginTop: '40px',
+        padding: '20px 16px',
         background: '#FFFBEB',
         borderRadius: '12px',
         borderLeft: '5px solid #FBBF24'
       }}>
         <h3 style={{ 
-          fontSize: '18px', 
+          fontSize: '16px', 
           fontWeight: 'bold', 
-          marginBottom: '15px',
+          marginBottom: '12px',
           color: '#92400E',
           display: 'flex',
           alignItems: 'center',
           gap: '8px'
         }}>
-           Newborn Care Tips
+          👶 Newborn Care Tips
         </h3>
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-          gap: '15px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', 
+          gap: '12px',
           color: '#92400E'
         }}>
-          <div style={{ fontSize: '14px' }}>
+          <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
             <strong>Soft Fabrics:</strong> 100% cotton for sensitive skin
           </div>
-          <div style={{ fontSize: '14px' }}>
+          <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
             <strong>Easy Dressing:</strong> Snap buttons for quick changes
           </div>
-          <div style={{ fontSize: '14px' }}>
+          <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
             <strong>Size Guide:</strong> 0-3M, 3-6M, 6-9M available
           </div>
-          <div style={{ fontSize: '14px' }}>
+          <div style={{ fontSize: '13px', lineHeight: '1.4' }}>
             <strong>Machine Washable:</strong> Easy care for busy parents
           </div>
         </div>

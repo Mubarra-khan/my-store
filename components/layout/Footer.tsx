@@ -1,4 +1,4 @@
-// components/layout/Footer.tsx
+// components/layout/Footer.tsx - MOBILE RESPONSIVE (With Original Newsletter Style)
 const Footer = () => {
   return (
     <footer style={{ 
@@ -6,25 +6,29 @@ const Footer = () => {
       color: 'white', 
       paddingTop: '60px' 
     }}>
-      <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 20px' }}>
+      <div style={{ 
+        maxWidth: '1280px', 
+        margin: '0 auto', 
+        padding: '0 20px' 
+      }}>
         
-        {/* Newsletter */}
+        {/* Newsletter - SAME STYLE, ONLY MOBILE RESPONSIVE */}
         <div style={{ 
           background: 'linear-gradient(135deg, #351b96 0%, #d85295 100%)',
           borderRadius: '16px',
-          padding: '40px',
+          padding: '40px 20px',
           marginBottom: '60px',
           textAlign: 'center'
         }}>
           <h3 style={{ 
-            fontSize: '28px', 
+            fontSize: 'clamp(24px, 5vw, 28px)', 
             fontWeight: 'bold', 
             marginBottom: '16px' 
           }}>
             Stay Updated
           </h3>
           <p style={{ 
-            fontSize: '16px', 
+            fontSize: 'clamp(14px, 3vw, 16px)', 
             marginBottom: '24px',
             opacity: 0.9
           }}>
@@ -33,7 +37,8 @@ const Footer = () => {
           <div style={{ 
             display: 'flex', 
             maxWidth: '500px', 
-            margin: '0 auto' 
+            margin: '0 auto',
+            flexDirection: 'row' // Always horizontal
           }}>
             <input 
               type="email" 
@@ -43,7 +48,8 @@ const Footer = () => {
                 padding: '12px 20px',
                 border: 'none',
                 borderRadius: '8px 0 0 8px',
-                fontSize: '16px'
+                fontSize: '16px',
+                width: '100%'
               }}
             />
             <button style={{
@@ -54,14 +60,15 @@ const Footer = () => {
               borderRadius: '0 8px 8px 0',
               fontWeight: 'bold',
               cursor: 'pointer',
-              fontSize: '16px'
+              fontSize: '16px',
+              whiteSpace: 'nowrap'
             }}>
               Subscribe
             </button>
           </div>
         </div>
 
-        {/* Main Footer */}
+        {/* Main Footer - MOBILE RESPONSIVE */}
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -72,13 +79,17 @@ const Footer = () => {
           {/* Column 1 */}
           <div>
             <h4 style={{ 
-              fontSize: '20px', 
+              fontSize: 'clamp(18px, 4vw, 20px)', 
               fontWeight: 'bold', 
               marginBottom: '20px' 
             }}>
               StyleStore
             </h4>
-            <p style={{ color: '#9CA3AF', lineHeight: 1.6 }}>
+            <p style={{ 
+              color: '#9CA3AF', 
+              lineHeight: 1.6,
+              fontSize: '14px'
+            }}>
               Premium clothing store offering the latest fashion trends for everyone.
             </p>
           </div>
@@ -86,7 +97,7 @@ const Footer = () => {
           {/* Column 2 */}
           <div>
             <h4 style={{ 
-              fontSize: '18px', 
+              fontSize: 'clamp(16px, 3.5vw, 18px)', 
               fontWeight: 'bold', 
               marginBottom: '20px' 
             }}>
@@ -98,7 +109,8 @@ const Footer = () => {
                   <a href="#" style={{ 
                     color: '#D1D5DB', 
                     textDecoration: 'none',
-                    transition: 'color 0.3s'
+                    transition: 'color 0.3s',
+                    fontSize: '14px'
                   }}>
                     {item}
                   </a>
@@ -110,7 +122,7 @@ const Footer = () => {
           {/* Column 3 */}
           <div>
             <h4 style={{ 
-              fontSize: '18px', 
+              fontSize: 'clamp(16px, 3.5vw, 18px)', 
               fontWeight: 'bold', 
               marginBottom: '20px' 
             }}>
@@ -122,7 +134,8 @@ const Footer = () => {
                   <a href="#" style={{ 
                     color: '#D1D5DB', 
                     textDecoration: 'none',
-                    transition: 'color 0.3s'
+                    transition: 'color 0.3s',
+                    fontSize: '14px'
                   }}>
                     {item}
                   </a>
@@ -134,13 +147,18 @@ const Footer = () => {
           {/* Column 4 */}
           <div>
             <h4 style={{ 
-              fontSize: '18px', 
+              fontSize: 'clamp(16px, 3.5vw, 18px)', 
               fontWeight: 'bold', 
               marginBottom: '20px' 
             }}>
               Contact
             </h4>
-            <ul style={{ listStyle: 'none', padding: 0, color: '#D1D5DB' }}>
+            <ul style={{ 
+              listStyle: 'none', 
+              padding: 0, 
+              color: '#D1D5DB',
+              fontSize: '14px'
+            }}>
               <li style={{ marginBottom: '10px' }}>📞 +1 (555) 123-4567</li>
               <li style={{ marginBottom: '10px' }}>✉️ support@stylestore.com</li>
               <li style={{ marginBottom: '10px' }}>📍 123 Fashion St, NYC</li>
@@ -148,18 +166,27 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Bar - MOBILE RESPONSIVE */}
         <div style={{ 
           padding: '30px 0', 
           display: 'flex', 
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '20px'
+          gap: '20px',
+          textAlign: 'center'
         }}>
-          <div style={{ color: '#9CA3AF' }}>
+          <div style={{ 
+            color: '#9CA3AF',
+            fontSize: '14px'
+          }}>
             © {new Date().getFullYear()} StyleStore. All rights reserved.
           </div>
-          <div style={{ display: 'flex', gap: '30px' }}>
+          <div style={{ 
+            display: 'flex', 
+            gap: '20px',
+            flexWrap: 'wrap',
+            justifyContent: 'center'
+          }}>
             {['Privacy Policy', 'Terms of Service', 'Cookies'].map((item) => (
               <a 
                 key={item} 

@@ -1,4 +1,4 @@
-// app/category/kids/page.tsx - WITH CARTPROVIDER
+// app/category/kids/page.tsx - WITH CARTPROVIDER - MOBILE RESPONSIVE
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -183,32 +183,54 @@ export default function KidsCategory() {
   const totalCount = products.length;
 
   return (
-    <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '40px 20px' }}>
-      <h1 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '10px' }}>
+    <div style={{ 
+      maxWidth: '1280px', 
+      margin: '0 auto', 
+      padding: '20px 16px',
+      width: '100%',
+      boxSizing: 'border-box'
+    }}>
+      <h1 style={{ 
+        fontSize: 'clamp(24px, 5vw, 36px)', 
+        fontWeight: 'bold', 
+        marginBottom: '8px',
+        textAlign: 'center'
+      }}>
         Kids Collection
       </h1>
-      <p style={{ color: '#6B7280', marginBottom: '40px' }}>
+      <p style={{ 
+        color: '#6B7280', 
+        marginBottom: '32px',
+        fontSize: 'clamp(14px, 3vw, 16px)',
+        textAlign: 'center'
+      }}>
         Boys & Girls - Jackets, Shirts, Trousers, T-Shirts, Dresses, Twinning Sets
       </p>
       
-      {/* Gender Filter */}
+      {/* Gender Filter - MOBILE RESPONSIVE */}
       <div style={{ 
         display: 'flex', 
-        gap: '10px', 
+        gap: '8px', 
         marginBottom: '20px',
         paddingBottom: '20px',
-        borderBottom: '1px solid #e5e7eb'
+        borderBottom: '1px solid #e5e7eb',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
       }}>
         <button
           onClick={() => setSelectedGender('all')}
           style={{
-            padding: '10px 20px',
+            padding: '10px 16px',
             borderRadius: '25px',
             border: '1px solid #d1d5db',
             background: selectedGender === 'all' ? '#10B981' : 'white',
             color: selectedGender === 'all' ? 'white' : '#374151',
             fontWeight: '600',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            fontSize: '14px',
+            flex: '1 1 auto',
+            minWidth: '100px',
+            maxWidth: '150px'
           }}
         >
          All Kids
@@ -216,39 +238,48 @@ export default function KidsCategory() {
         <button
           onClick={() => setSelectedGender('boys')}
           style={{
-            padding: '10px 20px',
+            padding: '10px 16px',
             borderRadius: '25px',
             border: '1px solid #d1d5db',
             background: selectedGender === 'boys' ? '#3B82F6' : 'white',
             color: selectedGender === 'boys' ? 'white' : '#374151',
             fontWeight: '600',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            fontSize: '14px',
+            flex: '1 1 auto',
+            minWidth: '100px',
+            maxWidth: '150px'
           }}
         >
-          Boys Only ({boysCount})
+          Boys ({boysCount})
         </button>
         <button
           onClick={() => setSelectedGender('girls')}
           style={{
-            padding: '10px 20px',
+            padding: '10px 16px',
             borderRadius: '25px',
             border: '1px solid #d1d5db',
             background: selectedGender === 'girls' ? '#EC4899' : 'white',
             color: selectedGender === 'girls' ? 'white' : '#374151',
             fontWeight: '600',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            fontSize: '14px',
+            flex: '1 1 auto',
+            minWidth: '100px',
+            maxWidth: '150px'
           }}
         >
-           Girls Only ({girlsCount})
+           Girls ({girlsCount})
         </button>
       </div>
       
-      {/* Category Filter Buttons */}
+      {/* Category Filter Buttons - MOBILE RESPONSIVE */}
       <div style={{ 
         display: 'flex', 
         flexWrap: 'wrap', 
-        gap: '10px', 
-        marginBottom: '30px'
+        gap: '8px', 
+        marginBottom: '24px',
+        justifyContent: 'center'
       }}>
         {categories.map(cat => {
           const count = cat === "All" 
@@ -261,7 +292,7 @@ export default function KidsCategory() {
               key={cat}
               onClick={() => setSelectedCategory(cat === "All" ? null : cat)}
               style={{
-                padding: '10px 20px',
+                padding: '8px 14px',
                 borderRadius: '25px',
                 border: '1px solid #d1d5db',
                 background: selectedCategory === cat || (cat === "All" && !selectedCategory) 
@@ -272,7 +303,9 @@ export default function KidsCategory() {
                   : '#374151',
                 fontWeight: '600',
                 cursor: 'pointer',
-                opacity: count === 0 ? 0.5 : 1
+                opacity: count === 0 ? 0.5 : 1,
+                fontSize: '13px',
+                whiteSpace: 'nowrap'
               }}
               disabled={count === 0}
             >
@@ -282,23 +315,25 @@ export default function KidsCategory() {
         })}
       </div>
       
-      {/* Active Filters Display */}
+      {/* Active Filters Display - MOBILE RESPONSIVE */}
       {(selectedGender !== 'all' || selectedCategory) && (
         <div style={{ 
           marginBottom: '20px', 
-          padding: '15px', 
+          padding: '12px 16px', 
           background: '#F0F9FF', 
           borderRadius: '10px',
           display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
+          flexDirection: 'column',
+          gap: '12px',
+          alignItems: 'center',
+          textAlign: 'center'
         }}>
           <div>
-            <span style={{ fontWeight: 'bold', color: '#10B981', fontSize: '16px' }}>
+            <span style={{ fontWeight: 'bold', color: '#10B981', fontSize: '15px' }}>
               {selectedGender === 'all' ? 'All Kids' : selectedGender === 'boys' ? 'Boys' : 'Girls'} 
               {selectedCategory && selectedCategory !== "All" ? ` • ${selectedCategory}` : ''}
             </span>
-            <span style={{ marginLeft: '15px', color: '#6B7280' }}>
+            <span style={{ display: 'block', marginTop: '4px', color: '#6B7280' }}>
               ({filteredProducts.length} products)
             </span>
           </div>
@@ -308,13 +343,14 @@ export default function KidsCategory() {
               setSelectedGender('all');
             }}
             style={{
-              padding: '8px 15px',
+              padding: '8px 20px',
               background: 'none',
               border: '1px solid #10B981',
               color: '#10B981',
               borderRadius: '6px',
               cursor: 'pointer',
-              fontWeight: '600'
+              fontWeight: '600',
+              fontSize: '14px'
             }}
           >
             Clear Filters
@@ -322,25 +358,29 @@ export default function KidsCategory() {
         </div>
       )}
       
-      {/* ✅ Products Grid */}
+      {/* ✅ Products Grid - MOBILE RESPONSIVE */}
       {filteredProducts.length > 0 ? (
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-          gap: '25px'
+          gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))',
+          gap: '16px'
         }}>
           {filteredProducts.map(product => (
             <div key={product.id} style={{
               background: 'white',
-              borderRadius: '12px',
+              borderRadius: '10px',
               overflow: 'hidden',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-              transition: 'transform 0.2s'
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              transition: 'transform 0.2s',
+              display: 'flex',
+              flexDirection: 'column',
+              height: '100%'
             }}>
               <div style={{
-                height: '250px',
+                height: '180px',
                 position: 'relative',
-                background: '#f9fafb'
+                background: '#f9fafb',
+                flexShrink: 0
               }}>
                 {!product.imageError ? (
                   <img 
@@ -361,7 +401,7 @@ export default function KidsCategory() {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '40px',
+                    fontSize: '32px',
                     color: '#d1d5db'
                   }}>
                     {product.category === 'Jackets' && '🧥'}
@@ -377,13 +417,13 @@ export default function KidsCategory() {
                 {addedItems[product.id] && (
                   <div style={{
                     position: 'absolute',
-                    top: '10px',
-                    left: '10px',
+                    top: '8px',
+                    left: '8px',
                     background: '#10B981',
                     color: 'white',
-                    fontSize: '10px',
+                    fontSize: '9px',
                     fontWeight: 'bold',
-                    padding: '5px 10px',
+                    padding: '3px 8px',
                     borderRadius: '4px',
                     zIndex: 2
                   }}>
@@ -392,15 +432,39 @@ export default function KidsCategory() {
                 )}
               </div>
               
-              <div style={{ padding: '20px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>
+              <div style={{ 
+                padding: '12px', 
+                flexGrow: 1,
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <h3 style={{ 
+                  fontSize: '14px', 
+                  fontWeight: '600', 
+                  marginBottom: '6px',
+                  lineHeight: '1.3'
+                }}>
                   {product.name}
                 </h3>
-                <p style={{ color: '#6B7280', fontSize: '14px', marginBottom: '8px' }}>
+                <p style={{ 
+                  color: '#6B7280', 
+                  fontSize: '12px', 
+                  marginBottom: '8px',
+                  flexGrow: 1
+                }}>
                   {product.category}
                 </p>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#10B981' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  alignItems: 'center',
+                  marginTop: 'auto'
+                }}>
+                  <span style={{ 
+                    fontSize: '15px', 
+                    fontWeight: 'bold', 
+                    color: '#10B981' 
+                  }}>
                     ${product.price}
                   </span>
                   <button 
@@ -409,14 +473,16 @@ export default function KidsCategory() {
                       background: addedItems[product.id] ? '#10B981' : '#10B981',
                       color: 'white',
                       border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: '6px',
+                      padding: '6px 12px',
+                      borderRadius: '5px',
                       fontWeight: '600',
                       cursor: 'pointer',
-                      opacity: addedItems[product.id] ? 0.8 : 1
+                      opacity: addedItems[product.id] ? 0.8 : 1,
+                      fontSize: '13px',
+                      whiteSpace: 'nowrap'
                     }}
                   >
-                    {addedItems[product.id] ? '✓ Added' : 'Add to Cart'}
+                    {addedItems[product.id] ? '✓ Added' : 'Add'}
                   </button>
                 </div>
               </div>
@@ -424,28 +490,39 @@ export default function KidsCategory() {
           ))}
         </div>
       ) : (
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
-          <div style={{ fontSize: '48px', marginBottom: '20px' }}>
+        <div style={{ 
+          textAlign: 'center', 
+          padding: '40px 16px', 
+          color: '#6b7280' 
+        }}>
+          <div style={{ fontSize: '40px', marginBottom: '16px' }}>
             {selectedGender === 'boys' ? '👦' : selectedGender === 'girls' ? '👧' : '👶'}
           </div>
-          <h3 style={{ fontSize: '20px', marginBottom: '10px' }}>
-            No products found for selected filters
+          <h3 style={{ 
+            fontSize: '18px', 
+            marginBottom: '8px',
+            fontWeight: '600'
+          }}>
+            No products found
           </h3>
-          <p>Try changing gender or category filters.</p>
+          <p style={{ fontSize: '14px' }}>
+            Try changing gender or category filters.
+          </p>
           <button
             onClick={() => {
               setSelectedCategory(null);
               setSelectedGender('all');
             }}
             style={{
-              marginTop: '20px',
+              marginTop: '16px',
               padding: '10px 20px',
               background: '#10B981',
               color: 'white',
               border: 'none',
               borderRadius: '6px',
               cursor: 'pointer',
-              fontWeight: '600'
+              fontWeight: '600',
+              fontSize: '14px'
             }}
           >
             Show All Products

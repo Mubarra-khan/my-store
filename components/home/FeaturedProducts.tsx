@@ -8,8 +8,21 @@ const FeaturedProducts = () => {
   const [currentHoverIndex, setCurrentHoverIndex] = useState<number>(0);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [addedItems, setAddedItems] = useState<{[key: number]: boolean}>({});
+  const [isMobile, setIsMobile] = useState(false);
 
   const { addToCart, cart } = useCart();
+
+  // ✅ ADDED: Check screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const products = [
     {
@@ -173,116 +186,124 @@ const FeaturedProducts = () => {
       parent.style.display = 'flex';
       parent.style.alignItems = 'center';
       parent.style.justifyContent = 'center';
-      parent.style.fontSize = '32px';
+      parent.style.fontSize = isMobile ? '24px' : '32px';
       parent.style.color = '#6B7280';
     }
   };
 
   return (
     <>
-      <section style={{ padding: '60px 20px', background: '#F8FAFC' }}>
+      <section style={{ 
+        padding: isMobile ? '40px 15px' : '60px 20px', 
+        background: '#F8FAFC' 
+      }}>
         <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
           {/* Header */}
           <div style={{ 
             textAlign: 'center', 
-            marginBottom: '40px'
+            marginBottom: isMobile ? '30px' : '40px'
           }}>
             <span style={{
               display: 'inline-block',
               background: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
               color: 'white',
-              padding: '8px 20px',
+              padding: isMobile ? '6px 15px' : '8px 20px',
               borderRadius: '50px',
-              fontSize: '14px',
+              fontSize: isMobile ? '12px' : '14px',
               fontWeight: 'bold',
-              marginBottom: '12px'
+              marginBottom: isMobile ? '10px' : '12px'
             }}>
               🔥 FEATURED PRODUCTS
             </span>
             <h2 style={{ 
-              fontSize: '32px', 
+              fontSize: isMobile ? '24px' : '32px', 
               fontWeight: 'bold', 
-              marginBottom: '12px',
+              marginBottom: isMobile ? '10px' : '12px',
               color: '#1F2937'
             }}>
               Best Selling Items
             </h2>
             <p style={{ 
               color: '#6B7280', 
-              fontSize: '16px',
+              fontSize: isMobile ? '14px' : '16px',
               maxWidth: '600px',
-              margin: '0 auto'
+              margin: '0 auto',
+              lineHeight: 1.5
             }}>
               Handpicked selection from all categories
             </p>
           </div>
 
-          {/* Products Grid - Lighter Cards */}
+          {/* ✅ UPDATED: Responsive Products Grid */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: '24px'
+            gridTemplateColumns: isMobile ? 
+              'repeat(1, 1fr)' : // Mobile: 1 column
+              'repeat(auto-fit, minmax(260px, 1fr))', // Desktop: responsive
+            gap: isMobile ? '20px' : '24px'
           }}>
             {products.map((product, index) => (
               <div 
                 key={product.id}
                 style={{
-                  background: '#FFFFFF', // ✅ CHANGED: Same white for all
+                  background: '#FFFFFF',
                   borderRadius: '12px',
                   overflow: 'hidden',
-                  boxShadow: '0 2px 10px rgba(0,0,0,0.04)', // ✅ CHANGED: Lighter shadow
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
                   transition: 'all 0.3s ease',
                   position: 'relative',
-                  height: '380px',
+                  height: isMobile ? '340px' : '380px', // Mobile: shorter
                   display: 'flex',
                   flexDirection: 'column',
                   cursor: 'pointer',
-                  border: '1px solid #F1F5F9', // ✅ CHANGED: Light border
-                  borderLeft: `3px solid ${getGenderColor(product.gender)}` // ✅ CHANGED: Thinner border (5px to 3px)
+                  border: '1px solid #F1F5F9',
+                  borderLeft: `3px solid ${getGenderColor(product.gender)}`
                 }}
-                onMouseEnter={() => setCurrentHoverIndex(index)}
+                onMouseEnter={() => !isMobile && setCurrentHoverIndex(index)}
                 onMouseLeave={() => {}}
               >
-                {/* Gender Badge - Lighter */}
+                {/* Gender Badge */}
                 <div style={{
                   position: 'absolute',
-                  top: '10px',
-                  left: '10px',
+                  top: isMobile ? '8px' : '10px',
+                  left: isMobile ? '8px' : '10px',
                   background: getGenderColor(product.gender),
                   color: 'white',
-                  fontSize: '9px', // ✅ CHANGED: Smaller
+                  fontSize: isMobile ? '8px' : '9px',
                   fontWeight: 'bold',
-                  padding: '3px 8px', // ✅ CHANGED: Smaller padding
-                  borderRadius: '3px', // ✅ CHANGED: Smaller radius
+                  padding: isMobile ? '2px 6px' : '3px 8px',
+                  borderRadius: '3px',
                   zIndex: 3,
-                  opacity: 0.9 // ✅ ADDED: Slightly transparent
+                  opacity: 0.9
                 }}>
                   {product.gender?.toUpperCase()}
                 </div>
 
-                {/* Hover Border Effect */}
-                <div 
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    borderRadius: '12px',
-                    border: currentHoverIndex === index ? `1px solid ${getGenderColor(product.gender)}` : '1px solid transparent',
-                    transition: 'all 0.3s ease',
-                    pointerEvents: 'none',
-                    zIndex: 1
-                  }}
-                />
+                {/* Hover Border Effect - Only on Desktop */}
+                {!isMobile && (
+                  <div 
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      borderRadius: '12px',
+                      border: currentHoverIndex === index ? `1px solid ${getGenderColor(product.gender)}` : '1px solid transparent',
+                      transition: 'all 0.3s ease',
+                      pointerEvents: 'none',
+                      zIndex: 1
+                    }}
+                  />
+                )}
 
                 {/* Product Image */}
                 <div style={{
-                  height: '200px',
+                  height: isMobile ? '180px' : '200px',
                   position: 'relative',
                   overflow: 'hidden',
-                  background: '#F9FAFB', // ✅ CHANGED: Lighter
-                  borderBottom: '1px solid #F3F4F6' // ✅ CHANGED: Lighter border
+                  background: '#F9FAFB',
+                  borderBottom: '1px solid #F3F4F6'
                 }}>
                   <div 
                     style={{
@@ -295,7 +316,7 @@ const FeaturedProducts = () => {
                       position: 'absolute',
                       top: 0,
                       left: 0,
-                      transform: currentHoverIndex === index ? 'scale(1.03)' : 'scale(1)', // ✅ CHANGED: Less zoom
+                      transform: !isMobile && currentHoverIndex === index ? 'scale(1.03)' : 'scale(1)',
                       transition: 'transform 0.3s ease'
                     }}
                     onError={handleImageError}
@@ -309,39 +330,39 @@ const FeaturedProducts = () => {
                     }}
                     style={{
                       position: 'absolute',
-                      top: '8px',
-                      right: '8px',
-                      background: 'rgba(255, 255, 255, 0.9)', // ✅ CHANGED: Slightly transparent
+                      top: isMobile ? '6px' : '8px',
+                      right: isMobile ? '6px' : '8px',
+                      background: 'rgba(255, 255, 255, 0.9)',
                       border: '1px solid #E5E7EB',
-                      width: '30px', // ✅ CHANGED: Smaller
-                      height: '30px',
+                      width: isMobile ? '28px' : '30px',
+                      height: isMobile ? '28px' : '30px',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '14px', // ✅ CHANGED: Smaller
+                      fontSize: isMobile ? '13px' : '14px',
                       cursor: 'pointer',
-                      boxShadow: '0 1px 5px rgba(0,0,0,0.05)', // ✅ CHANGED: Lighter shadow
+                      boxShadow: '0 1px 5px rgba(0,0,0,0.05)',
                       zIndex: 3,
-                      transform: currentHoverIndex === index ? 'scale(1.05)' : 'scale(1)', // ✅ CHANGED: Less scale
+                      transform: !isMobile && currentHoverIndex === index ? 'scale(1.05)' : 'scale(1)',
                       transition: 'all 0.2s ease'
                     }}
                   >
                     {wishlist.includes(product.id) ? '❤️' : '🤍'}
                   </button>
                   
-                  {/* Added to Cart Badge - Lighter */}
+                  {/* Added to Cart Badge */}
                   {addedItems[product.id] && (
                     <div style={{
                       position: 'absolute',
-                      top: '8px',
-                      left: '8px',
+                      top: isMobile ? '6px' : '8px',
+                      left: isMobile ? '6px' : '8px',
                       background: '#10B981',
                       color: 'white',
-                      fontSize: '9px', // ✅ CHANGED: Smaller
+                      fontSize: isMobile ? '8px' : '9px',
                       fontWeight: 'bold',
-                      padding: '3px 6px', // ✅ CHANGED: Smaller padding
-                      borderRadius: '3px', // ✅ CHANGED: Smaller radius
+                      padding: isMobile ? '2px 5px' : '3px 6px',
+                      borderRadius: '3px',
                       zIndex: 3,
                       animation: 'pulseBorder 2s infinite'
                     }}>
@@ -352,7 +373,7 @@ const FeaturedProducts = () => {
 
                 {/* Product Info */}
                 <div style={{ 
-                  padding: '16px', 
+                  padding: isMobile ? '14px' : '16px', 
                   flex: 1, 
                   display: 'flex', 
                   flexDirection: 'column'
@@ -360,7 +381,7 @@ const FeaturedProducts = () => {
                   <div style={{ marginBottom: '8px', flex: 1 }}>
                     <p style={{ 
                       color: '#6B7280', 
-                      fontSize: '12px',
+                      fontSize: isMobile ? '11px' : '12px',
                       textTransform: 'uppercase',
                       marginBottom: '4px',
                       fontWeight: '500'
@@ -368,12 +389,12 @@ const FeaturedProducts = () => {
                       {product.category}
                     </p>
                     <h3 style={{ 
-                      fontSize: '16px', 
+                      fontSize: isMobile ? '15px' : '16px', 
                       fontWeight: 'bold',
                       marginBottom: '6px',
                       color: '#1F2937',
                       lineHeight: 1.3,
-                      height: '38px',
+                      height: isMobile ? '34px' : '38px',
                       overflow: 'hidden'
                     }}>
                       {product.name}
@@ -384,11 +405,11 @@ const FeaturedProducts = () => {
                   <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
-                    marginBottom: '12px' 
+                    marginBottom: isMobile ? '10px' : '12px' 
                   }}>
                     <span style={{ 
                       color: '#F59E0B', 
-                      fontSize: '12px',
+                      fontSize: isMobile ? '11px' : '12px',
                       marginRight: '4px'
                     }}>
                       {'★'.repeat(Math.floor(product.rating))}
@@ -396,7 +417,7 @@ const FeaturedProducts = () => {
                     </span>
                     <span style={{ 
                       color: '#6B7280', 
-                      fontSize: '11px',
+                      fontSize: isMobile ? '10px' : '11px',
                       marginLeft: '4px'
                     }}>
                       ({product.reviews})
@@ -412,13 +433,16 @@ const FeaturedProducts = () => {
                   }}>
                     <div>
                       <span style={{ 
-                        fontSize: '18px', 
+                        fontSize: isMobile ? '16px' : '18px', 
                         fontWeight: 'bold',
                         color: '#1F2937'
                       }}>
                         ${product.price.toFixed(2)}
                       </span>
-                      <div style={{ fontSize: '12px', color: '#9CA3AF' }}> {/* ✅ CHANGED: Lighter color */}
+                      <div style={{ 
+                        fontSize: isMobile ? '11px' : '12px', 
+                        color: '#9CA3AF' 
+                      }}>
                         {product.gender === 'men' ? "Men's" : 
                          product.gender === 'women' ? "Women's" : 
                          product.gender === 'kids' ? "Kids" : "Product"}
@@ -435,22 +459,25 @@ const FeaturedProducts = () => {
                           : 'linear-gradient(135deg, #8B5CF6, #EC4899)',
                         color: 'white',
                         border: 'none',
-                        padding: '7px 14px', // ✅ CHANGED: Smaller padding
-                        borderRadius: '5px', // ✅ CHANGED: Smaller radius
+                        padding: isMobile ? '6px 12px' : '7px 14px',
+                        borderRadius: isMobile ? '4px' : '5px',
                         fontWeight: 'bold',
                         cursor: 'pointer',
-                        fontSize: '12px',
-                        transition: 'all 0.2s ease'
+                        fontSize: isMobile ? '11px' : '12px',
+                        transition: 'all 0.2s ease',
+                        whiteSpace: 'nowrap'
                       }}
                       onMouseEnter={(e) => {
-                        if (!addedItems[product.id]) {
+                        if (!isMobile && !addedItems[product.id]) {
                           e.currentTarget.style.transform = 'scale(1.03)';
                           e.currentTarget.style.boxShadow = '0 2px 8px rgba(139, 92, 246, 0.2)';
                         }
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'scale(1)';
-                        e.currentTarget.style.boxShadow = 'none';
+                        if (!isMobile) {
+                          e.currentTarget.style.transform = 'scale(1)';
+                          e.currentTarget.style.boxShadow = 'none';
+                        }
                       }}
                     >
                       {addedItems[product.id] ? '✓ Added' : 'Add to Cart'}
@@ -463,7 +490,7 @@ const FeaturedProducts = () => {
         </div>
       </section>
 
-      {/* Login Prompt Modal */}
+      {/* Login Prompt Modal - Responsive */}
       {showLoginPrompt && (
         <div style={{
           position: 'fixed',
@@ -475,19 +502,20 @@ const FeaturedProducts = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          zIndex: 1000
+          zIndex: 1000,
+          padding: isMobile ? '15px' : '0'
         }}>
           <div style={{
             background: 'white',
-            padding: '24px',
+            padding: isMobile ? '20px' : '24px',
             borderRadius: '12px',
-            width: '350px',
+            width: isMobile ? '90%' : '350px',
             maxWidth: '90%',
             boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
           }}>
             <h3 style={{ 
-              marginBottom: '16px', 
-              fontSize: '20px', 
+              marginBottom: isMobile ? '12px' : '16px', 
+              fontSize: isMobile ? '18px' : '20px', 
               fontWeight: 'bold',
               color: '#EF4444'
             }}>
@@ -495,26 +523,32 @@ const FeaturedProducts = () => {
             </h3>
             
             <p style={{ 
-              marginBottom: '20px', 
+              marginBottom: isMobile ? '16px' : '20px', 
               color: '#6B7280',
-              fontSize: '14px',
+              fontSize: isMobile ? '13px' : '14px',
               lineHeight: 1.5
             }}>
               Please login to add items to your cart.
             </p>
             
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+            <div style={{ 
+              display: 'flex', 
+              gap: isMobile ? '8px' : '10px', 
+              justifyContent: 'flex-end',
+              flexDirection: isMobile ? 'column' : 'row'
+            }}>
               <button
                 onClick={() => setShowLoginPrompt(false)}
                 style={{
-                  padding: '10px 20px',
+                  padding: isMobile ? '8px 16px' : '10px 20px',
                   background: '#F3F4F6',
                   color: '#374151',
                   border: 'none',
                   borderRadius: '6px',
-                  fontSize: '14px',
+                  fontSize: isMobile ? '13px' : '14px',
                   fontWeight: '600',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  width: isMobile ? '100%' : 'auto'
                 }}
               >
                 Cancel
@@ -525,14 +559,15 @@ const FeaturedProducts = () => {
                   setShowLoginPrompt(false);
                 }}
                 style={{
-                  padding: '10px 20px',
+                  padding: isMobile ? '8px 16px' : '10px 20px',
                   background: 'linear-gradient(90deg, #7C3AED, #EC4899)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '6px',
-                  fontSize: '14px',
+                  fontSize: isMobile ? '13px' : '14px',
                   fontWeight: '600',
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  width: isMobile ? '100%' : 'auto'
                 }}
               >
                 Login Now
