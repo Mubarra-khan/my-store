@@ -4,101 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import AuthButtons from '@/components/auth/AuthButtons';
 import { useCart } from '@/components/providers/CartProvider';
+import { Menu, X, Search, ShoppingBag } from 'lucide-react';
 
 const Header = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const { cartCount } = useCart();
-  
-  // ✅ ADDED: Search state
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
-  // ✅ ADDED: Check if mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // ✅ ADDED: Responsive styles
-  const styles = {
-    topBar: {
-      background: '#111827',
-      color: 'white',
-      padding: '8px 0',
-      fontSize: isMobile ? '12px' : '14px',
-      display: isMobile ? 'none' : 'block' // Hide on mobile
-    },
-    header: {
-      background: 'white',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.08)',
-      position: 'sticky' as const,
-      top: 0,
-      zIndex: 1000
-    },
-    container: {
-      maxWidth: '1280px',
-      margin: '0 auto',
-      padding: isMobile ? '0 12px' : '0 16px'
-    },
-    logo: {
-      fontSize: isMobile ? '22px' : '28px',
-      fontWeight: 'bold',
-      background: 'linear-gradient(90deg, #7C3AED, #EC4899)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      textDecoration: 'none'
-    },
-    navLink: {
-      color: '#374151',
-      textDecoration: 'none',
-      fontWeight: 500,
-      padding: isMobile ? '8px 12px' : '10px 16px',
-      borderRadius: '8px',
-      transition: 'all 0.3s ease',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '4px',
-      fontSize: isMobile ? '14px' : '16px'
-    },
-    dropdown: {
-      position: 'absolute' as const,
-      top: '100%',
-      left: 0,
-      background: 'white',
-      minWidth: isMobile ? '160px' : '200px',
-      borderRadius: '8px',
-      boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-      padding: '8px 0',
-      zIndex: 1000
-    },
-    dropdownItem: {
-      padding: isMobile ? '10px 16px' : '12px 20px',
-      color: '#374151',
-      textDecoration: 'none',
-      display: 'block',
-      transition: 'background 0.2s',
-      fontSize: isMobile ? '14px' : '16px'
-    },
-    mobileMenuButton: {
-      background: 'none',
-      border: 'none',
-      fontSize: '24px',
-      cursor: 'pointer',
-      color: '#374151',
-      padding: '8px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center'
-    }
-  };
+  const { cartCount } = useCart();
 
   const categories = {
     men: [
@@ -129,43 +42,33 @@ const Header = () => {
     ]
   };
 
-  // ✅ ADDED: Handle search function
   const handleSearch = () => {
     if (!searchQuery.trim()) {
       alert('Please enter something to search');
       return;
     }
-    
     const searchTerm = encodeURIComponent(searchQuery.trim());
     window.location.href = `/search?q=${searchTerm}`;
     setShowSearch(false);
     setSearchQuery('');
   };
 
-  // ✅ ADDED: Handle Enter key press
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
+    if (e.key === 'Enter') handleSearch();
   };
 
   return (
     <>
       {/* Top Bar - Hidden on Mobile */}
-      <div style={styles.topBar}>
-        <div style={styles.container}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            flexWrap: isMobile ? 'wrap' : 'nowrap'
-          }}>
+      <div className="bg-gray-900 text-white text-sm py-2 hidden md:block">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
             <span>✨ Free shipping on orders over $50</span>
-            <div style={{ display: 'flex', gap: isMobile ? '12px' : '24px' }}>
-              <Link href="/support" style={{ color: 'white', textDecoration: 'none', fontSize: isMobile ? '12px' : '14px' }}>
+            <div className="flex gap-6">
+              <Link href="/support" className="text-white hover:text-gray-300 transition">
                 Support
               </Link>
-              <Link href="/track-order" style={{ color: 'white', textDecoration: 'none', fontSize: isMobile ? '12px' : '14px' }}>
+              <Link href="/track-order" className="text-white hover:text-gray-300 transition">
                 Track Order
               </Link>
             </div>
@@ -174,282 +77,143 @@ const Header = () => {
       </div>
 
       {/* Main Header */}
-      <header style={styles.header}>
-        <div style={styles.container}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: isMobile ? '15px 0' : '20px 0',
-            position: 'relative'
-          }}>
+      <header className="bg-white shadow-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between py-4">
             {/* Logo */}
-            <Link href="/" style={styles.logo}>
+            <Link href="/" className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
               StyleStore
             </Link>
 
             {/* Desktop Navigation - Hidden on Mobile */}
-            {!isMobile && (
-              <nav style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                {/* Home */}
-                <Link href="/" style={styles.navLink}>
-                  Home
-                </Link>
+            <nav className="hidden lg:flex items-center space-x-1">
+              <Link href="/" className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg">
+                Home
+              </Link>
 
-                {/* Men Dropdown */}
-                <div
-                  style={{ position: 'relative' }}
-                  onMouseEnter={() => setActiveDropdown('men')}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                >
-                  <button style={{
-                    ...styles.navLink,
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    fontSize: 'inherit'
-                  }}>
-                    Men ▾
-                  </button>
-                  {activeDropdown === 'men' && (
-                    <div style={styles.dropdown}>
-                      {categories.men.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          style={styles.dropdownItem}
-                          onClick={() => setActiveDropdown(null)}
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              {/* Men Dropdown */}
+              <div className="relative"
+                onMouseEnter={() => setActiveDropdown('men')}
+                onMouseLeave={() => setActiveDropdown(null)}>
+                <button className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg flex items-center">
+                  Men ▾
+                </button>
+                {activeDropdown === 'men' && (
+                  <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-10">
+                    {categories.men.map((item) => (
+                      <Link key={item.name} href={item.href}
+                        className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                        onClick={() => setActiveDropdown(null)}>
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-                {/* Women Dropdown */}
-                <div
-                  style={{ position: 'relative' }}
-                  onMouseEnter={() => setActiveDropdown('women')}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                >
-                  <button style={{
-                    ...styles.navLink,
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    fontSize: 'inherit'
-                  }}>
-                    Women ▾
-                  </button>
-                  {activeDropdown === 'women' && (
-                    <div style={styles.dropdown}>
-                      {categories.women.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          style={styles.dropdownItem}
-                          onClick={() => setActiveDropdown(null)}
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              {/* Women Dropdown */}
+              <div className="relative"
+                onMouseEnter={() => setActiveDropdown('women')}
+                onMouseLeave={() => setActiveDropdown(null)}>
+                <button className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg flex items-center">
+                  Women ▾
+                </button>
+                {activeDropdown === 'women' && (
+                  <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-10">
+                    {categories.women.map((item) => (
+                      <Link key={item.name} href={item.href}
+                        className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                        onClick={() => setActiveDropdown(null)}>
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-                {/* Kids Dropdown */}
-                <div
-                  style={{ position: 'relative' }}
-                  onMouseEnter={() => setActiveDropdown('kids')}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                >
-                  <button style={{
-                    ...styles.navLink,
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontFamily: 'inherit',
-                    fontSize: 'inherit'
-                  }}>
-                    Kids ▾
-                  </button>
-                  {activeDropdown === 'kids' && (
-                    <div style={styles.dropdown}>
-                      {categories.kids.map((item) => (
-                        <Link
-                          key={item.name}
-                          href={item.href}
-                          style={styles.dropdownItem}
-                          onClick={() => setActiveDropdown(null)}
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              {/* Kids Dropdown */}
+              <div className="relative"
+                onMouseEnter={() => setActiveDropdown('kids')}
+                onMouseLeave={() => setActiveDropdown(null)}>
+                <button className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg flex items-center">
+                  Kids ▾
+                </button>
+                {activeDropdown === 'kids' && (
+                  <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-10">
+                    {categories.kids.map((item) => (
+                      <Link key={item.name} href={item.href}
+                        className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                        onClick={() => setActiveDropdown(null)}>
+                        {item.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-                {/* Newborns */}
-                <Link 
-                  href="/category/newborns" 
-                  style={styles.navLink}
-                  onClick={() => setActiveDropdown(null)}
-                >
-                  Newborns
-                </Link>
+              <Link href="/category/newborns" className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg">
+                Newborns
+              </Link>
 
-                {/* Sale */}
-                <Link href="/sale" style={{
-                  ...styles.navLink,
-                  color: '#EF4444',
-                  fontWeight: 'bold'
-                }}>
-                  🏷️ Sale
-                </Link>
-              </nav>
-            )}
+              <Link href="/sale" className="px-4 py-2 text-red-500 font-bold hover:text-red-600 transition rounded-lg">
+                🏷️ Sale
+              </Link>
+            </nav>
 
             {/* Actions */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '12px' : '20px' }}>
-              {/* Mobile Menu Button - Only on Mobile */}
-              {isMobile && (
-                <button 
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  style={styles.mobileMenuButton}
-                >
-                  {isMobileMenuOpen ? '✕' : '☰'}
-                </button>
-              )}
+            <div className="flex items-center space-x-4 md:space-x-6">
+              {/* Mobile Menu Button */}
+              <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2">
+                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
 
               {/* Search Icon */}
-              <button 
-                onClick={() => setShowSearch(true)}
-                style={{
-                  background: 'transparent',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: isMobile ? '6px' : '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  position: 'relative'
-                }}
-                title="Search Products"
-              >
-                <div style={{
-                  width: isMobile ? '34px' : '38px',
-                  height: isMobile ? '34px' : '38px',
-                  borderRadius: '50%',
-                  border: '1.5px solid #D1D5DB',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  transition: 'all 0.2s ease',
-                  background: 'white'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = '#7C3AED';
-                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(124, 58, 237, 0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = '#D1D5DB';
-                  e.currentTarget.style.boxShadow = 'none';
-                }}
-                >
-                  <svg 
-                    width={isMobile ? "16" : "18"} 
-                    height={isMobile ? "16" : "18"} 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="#6B7280"
-                    strokeWidth="2"
-                    style={{ transition: 'all 0.2s ease' }}
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                  </svg>
-                </div>
+              <button onClick={() => setShowSearch(true)} className="p-2 hover:text-purple-600 transition">
+                <Search size={20} />
               </button>
-              
-              {/* Auth Buttons */}
-              {!isMobile && <AuthButtons />}
-              
+
+              {/* Auth Buttons - Hidden on Mobile */}
+              <div className="hidden md:block">
+                <AuthButtons />
+              </div>
+
               {/* Cart */}
-              <Link href="/cart" style={{
-                position: 'relative',
-                color: '#374151',
-                textDecoration: 'none',
-                fontSize: isMobile ? '16px' : '18px',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#7C3AED';
-                e.currentTarget.style.transform = 'scale(1.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#374151';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-              >
-                🛒
-                <span style={{
-                  position: 'absolute',
-                  top: '-8px',
-                  right: '-8px',
-                  background: '#7C3AED',
-                  color: 'white',
-                  fontSize: isMobile ? '10px' : '11px',
-                  width: isMobile ? '18px' : '20px',
-                  height: isMobile ? '18px' : '20px',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                }}>
-                  {cartCount > 9 ? '9+' : cartCount}
-                </span>
+              <Link href="/cart" className="relative p-2 hover:text-purple-600 transition">
+                <ShoppingBag size={20} />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {cartCount > 9 ? '9+' : cartCount}
+                  </span>
+                )}
               </Link>
             </div>
           </div>
 
-          {/* Mobile Menu - Only show when open */}
-          {isMobile && isMobileMenuOpen && (
-            <div style={{
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              right: 0,
-              background: 'white',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.15)',
-              borderRadius: '0 0 12px 12px',
-              zIndex: 999,
-              padding: '16px',
-              borderTop: '1px solid #E5E7EB'
-            }}>
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <Link href="/" style={styles.navLink} onClick={() => setIsMobileMenuOpen(false)}>
+          {/* Mobile Menu */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden bg-white shadow-lg rounded-lg mt-2 p-4">
+              <nav className="flex flex-col space-y-2">
+                <Link href="/" className="py-2 px-4 hover:bg-gray-50 rounded" onClick={() => setIsMobileMenuOpen(false)}>
                   Home
                 </Link>
-                
-                {/* Mobile Categories */}
-                {['Men', 'Women', 'Kids', 'Newborns', 'Sale'].map((category) => (
-                  <div key={category} style={{ position: 'relative' }}>
-                    <Link 
-                      href={category === 'Sale' ? '/sale' : `/category/${category.toLowerCase()}`}
-                      style={styles.navLink}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      {category} {category !== 'Sale' && '→'}
-                    </Link>
-                  </div>
-                ))}
+                <Link href="/category/men" className="py-2 px-4 hover:bg-gray-50 rounded" onClick={() => setIsMobileMenuOpen(false)}>
+                  Men
+                </Link>
+                <Link href="/category/women" className="py-2 px-4 hover:bg-gray-50 rounded" onClick={() => setIsMobileMenuOpen(false)}>
+                  Women
+                </Link>
+                <Link href="/category/kids" className="py-2 px-4 hover:bg-gray-50 rounded" onClick={() => setIsMobileMenuOpen(false)}>
+                  Kids
+                </Link>
+                <Link href="/category/newborns" className="py-2 px-4 hover:bg-gray-50 rounded" onClick={() => setIsMobileMenuOpen(false)}>
+                  Newborns
+                </Link>
+                <Link href="/sale" className="py-2 px-4 text-red-500 font-bold hover:bg-gray-50 rounded" onClick={() => setIsMobileMenuOpen(false)}>
+                  🏷️ Sale
+                </Link>
                 
                 {/* Mobile Auth Buttons */}
-                <div style={{ marginTop: '15px', borderTop: '1px solid #E5E7EB', paddingTop: '15px' }}>
+                <div className="pt-4 border-t mt-2">
                   <AuthButtons />
                 </div>
               </nav>
@@ -458,201 +222,46 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Search Modal - Responsive */}
+      {/* Search Modal */}
       {showSearch && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.7)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 2000,
-          animation: 'fadeIn 0.3s ease',
-          padding: isMobile ? '15px' : '0'
-        }}>
-          <div style={{
-            background: 'white',
-            borderRadius: '16px',
-            width: isMobile ? '100%' : '600px',
-            maxWidth: '90%',
-            maxHeight: '80vh',
-            overflow: 'hidden',
-            boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-            animation: 'slideUp 0.3s ease'
-          }}>
-            {/* Search Header */}
-            <div style={{
-              padding: isMobile ? '15px' : '20px',
-              borderBottom: '1px solid #E5E7EB',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <h3 style={{ 
-                fontSize: isMobile ? '18px' : '20px', 
-                fontWeight: 'bold', 
-                color: '#1F2937' 
-              }}>
-                🔍 Search Products
-              </h3>
-              <button
-                onClick={() => {
-                  setShowSearch(false);
-                  setSearchQuery('');
-                }}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  fontSize: isMobile ? '22px' : '24px',
-                  cursor: 'pointer',
-                  color: '#6B7280',
-                  padding: '5px'
-                }}
-              >
-                ✕
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl w-full max-w-lg">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h3 className="text-lg font-bold">🔍 Search Products</h3>
+              <button onClick={() => setShowSearch(false)} className="p-2">
+                <X size={20} />
               </button>
             </div>
-
-            {/* Search Input */}
-            <div style={{ padding: isMobile ? '15px' : '20px' }}>
-              <div style={{
-                display: 'flex',
-                flexDirection: isMobile ? 'column' : 'row',
-                gap: '10px',
-                marginBottom: '20px'
-              }}>
+            
+            <div className="p-4">
+              <div className="flex gap-2 mb-4">
                 <input
                   type="text"
-                  placeholder="Search in Men, Women, Kids, Newborns, Sale..."
+                  placeholder="Search products..."
+                  className="flex-1 p-3 border rounded-lg"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  style={{
-                    flex: 1,
-                    padding: isMobile ? '12px 16px' : '15px 20px',
-                    border: '2px solid #E5E7EB',
-                    borderRadius: '10px',
-                    fontSize: isMobile ? '15px' : '16px',
-                    outline: 'none',
-                    transition: 'all 0.3s ease'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#7C3AED';
-                    e.target.style.boxShadow = '0 0 0 3px rgba(124, 58, 237, 0.1)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = '#E5E7EB';
-                    e.target.style.boxShadow = 'none';
-                  }}
                   autoFocus
                 />
-                <button
-                  onClick={handleSearch}
-                  style={{
-                    padding: isMobile ? '12px 20px' : '15px 25px',
-                    background: 'linear-gradient(90deg, #7C3AED, #EC4899)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '10px',
-                    fontSize: isMobile ? '15px' : '16px',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease'
-                  }}
-                >
+                <button onClick={handleSearch} className="bg-purple-600 text-white px-4 rounded-lg">
                   Search
                 </button>
               </div>
-
-              {/* Search Suggestions */}
-              <div>
-                <p style={{ 
-                  color: '#6B7280', 
-                  fontSize: isMobile ? '13px' : '14px', 
-                  marginBottom: '10px',
-                  fontWeight: '500'
-                }}>
-                  Quick Categories:
-                </p>
-                <div style={{ 
-                  display: 'flex', 
-                  flexWrap: 'wrap', 
-                  gap: '8px',
-                  justifyContent: isMobile ? 'center' : 'flex-start'
-                }}>
-                  {['Jackets', 'Dresses', 'T-Shirts', 'Suits', 'Hoodies', 'Shirts', 'Trousers', 'Baby Dresses'].map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => {
-                        setSearchQuery(category);
-                        setTimeout(() => handleSearch(), 100);
-                      }}
-                      style={{
-                        padding: isMobile ? '6px 12px' : '8px 15px',
-                        background: '#F3F4F6',
-                        border: '1px solid #E5E7EB',
-                        borderRadius: '20px',
-                        color: '#374151',
-                        fontSize: isMobile ? '13px' : '14px',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease'
-                      }}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Search Tips */}
-              <div style={{ 
-                marginTop: '20px', 
-                padding: isMobile ? '12px' : '15px', 
-                background: '#F0F9FF', 
-                borderRadius: '10px',
-                border: '1px solid #BAE6FD'
-              }}>
-                <p style={{ 
-                  color: '#0C4A6E', 
-                  fontSize: isMobile ? '13px' : '14px',
-                  margin: 0
-                }}>
-                  💡 <strong>Tip:</strong> Search by product name, category, or gender.
-                </p>
+              
+              <div className="text-sm text-gray-600 mb-2">Quick Categories:</div>
+              <div className="flex flex-wrap gap-2">
+                {['Jackets', 'Dresses', 'T-Shirts', 'Suits', 'Trousers'].map((cat) => (
+                  <button key={cat} onClick={() => setSearchQuery(cat)}
+                    className="px-3 py-1 bg-gray-100 rounded-full text-sm">
+                    {cat}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         </div>
       )}
-
-      {/* CSS Animations */}
-      <style jsx global>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideUp {
-          from { 
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to { 
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-          .hide-on-mobile {
-            display: none !important;
-          }
-        }
-      `}</style>
     </>
   );
 };
