@@ -2,12 +2,24 @@
 
 import Link from 'next/link';
 import { useCart } from '@/components/providers/CartProvider'; // ✅ ADDED: CartProvider import
-import { useState } from 'react'; // ✅ ADDED: For feedback state
+import { useState, useEffect } from 'react'; // ✅ ADDED: For feedback state and mobile detection
 
 export default function SalePage() {
   // ✅ ADDED: Cart hook and feedback state
   const { addToCart } = useCart();
   const [addedItems, setAddedItems] = useState<{[key: string]: boolean}>({});
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // ✅ ADDED: Handle add to cart function
   const handleAddToCart = (product: any, category: string) => {
@@ -101,37 +113,50 @@ export default function SalePage() {
     <div style={{ 
       maxWidth: '1280px', 
       margin: '0 auto', 
-      padding: '40px 20px'
+      padding: isMobile ? '20px 12px' : '40px 20px' // Mobile: smaller padding
     }}>
-      {/* Sale Banner - PHONE KE LIYE PADDING CHANGE */}
+      {/* Sale Banner - Mobile ke liye responsive */}
       <div style={{ 
         background: 'linear-gradient(135deg, #EF4444, #DC2626)',
         borderRadius: '16px',
-        padding: '40px',
+        padding: isMobile ? '24px 16px' : '40px', // Mobile: smaller padding
         color: 'white',
-        marginBottom: '40px',
+        marginBottom: isMobile ? '30px' : '40px', // Mobile: smaller margin
         textAlign: 'center'
       }}>
-        <h1 style={{ fontSize: '48px', fontWeight: 'bold', marginBottom: '10px' }}>
+        <h1 style={{ 
+          fontSize: isMobile ? '32px' : '48px', // Mobile: smaller font
+          fontWeight: 'bold', 
+          marginBottom: '10px' 
+        }}>
           SALE UP TO 70% OFF
         </h1>
-        <p style={{ fontSize: '20px', opacity: 0.9 }}>
+        <p style={{ 
+          fontSize: isMobile ? '16px' : '20px', // Mobile: smaller font
+          opacity: 0.9 
+        }}>
           Limited time offer. Shop now before it's gone!
         </p>
       </div>
 
       {/* Sale by Categories */}
       {saleCategories.map((category) => (
-        <div key={category.name} style={{ marginBottom: '50px' }}>
-          {/* Category Header - PHONE KE LIYE FLEX DIRECTION */}
+        <div key={category.name} style={{ marginBottom: isMobile ? '40px' : '50px' }}>
+          {/* Category Header - Mobile ke liye flex direction */}
           <div style={{ 
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center',
-            marginBottom: '24px',
-            flexDirection: 'row' // Desktop pe row, phone pe column
+            marginBottom: isMobile ? '20px' : '24px',
+            flexDirection: isMobile ? 'column' : 'row', // Mobile: column, Desktop: row
+            gap: isMobile ? '12px' : '0', // Mobile: gap between items
+            textAlign: isMobile ? 'center' : 'left'
           }}>
-            <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: category.color }}>
+            <h2 style={{ 
+              fontSize: isMobile ? '22px' : '28px', // Mobile: smaller font
+              fontWeight: 'bold', 
+              color: category.color 
+            }}>
               {category.name} Sale
             </h2>
             <Link 
@@ -142,18 +167,21 @@ export default function SalePage() {
                 fontWeight: '600',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                fontSize: isMobile ? '14px' : '16px' // Mobile: smaller font
               }}
             >
               View all {category.name} sale items →
             </Link>
           </div>
 
-          {/* ✅ Products Grid - PHONE KE LIYE CHHOTA */}
+          {/* ✅ Products Grid - Mobile ke liye 2 columns */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-            gap: '25px'
+            gridTemplateColumns: isMobile ? 
+              'repeat(2, 1fr)' : // Mobile: 2 columns
+              'repeat(auto-fill, minmax(250px, 1fr))', // Desktop: responsive
+            gap: isMobile ? '12px' : '25px' // Mobile: smaller gap
           }}>
             {category.products.map((product, index) => {
               // ✅ Generate unique ID for feedback
@@ -173,40 +201,40 @@ export default function SalePage() {
                     position: 'relative'
                   }}
                 >
-                  {/* Product Image - PHONE KE LIYE HEIGHT CHANGE */}
+                  {/* Product Image - Mobile ke liye smaller height */}
                   <div style={{
-                    height: '200px',
+                    height: isMobile ? '150px' : '200px', // Mobile: smaller image
                     backgroundImage: `url(${product.image})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     position: 'relative'
                   }}>
-                    {/* Discount Badge */}
+                    {/* Discount Badge - Mobile ke liye smaller */}
                     <div style={{
                       position: 'absolute',
-                      top: '12px',
-                      right: '12px',
+                      top: isMobile ? '8px' : '12px',
+                      right: isMobile ? '8px' : '12px',
                       background: '#EF4444',
                       color: 'white',
-                      padding: '6px 12px',
+                      padding: isMobile ? '4px 8px' : '6px 12px',
                       borderRadius: '20px',
-                      fontSize: '14px',
+                      fontSize: isMobile ? '12px' : '14px',
                       fontWeight: 'bold'
                     }}>
                       {product.discount}
                     </div>
 
-                    {/* ✅ ADDED: Added to Cart Badge */}
+                    {/* ✅ ADDED: Added to Cart Badge - Mobile ke liye smaller */}
                     {isAdded && (
                       <div style={{
                         position: 'absolute',
-                        top: '12px',
-                        left: '12px',
+                        top: isMobile ? '8px' : '12px',
+                        left: isMobile ? '8px' : '12px',
                         background: '#10B981',
                         color: 'white',
-                        padding: '6px 12px',
+                        padding: isMobile ? '4px 8px' : '6px 12px',
                         borderRadius: '20px',
-                        fontSize: '12px',
+                        fontSize: isMobile ? '10px' : '12px',
                         fontWeight: 'bold',
                         zIndex: 2
                       }}>
@@ -215,21 +243,35 @@ export default function SalePage() {
                     )}
                   </div>
 
-                  {/* Product Info */}
-                  <div style={{ padding: '16px' }}>
+                  {/* Product Info - Mobile ke liye smaller padding */}
+                  <div style={{ padding: isMobile ? '12px' : '16px' }}>
                     <h3 style={{ 
-                      fontSize: '16px', 
+                      fontSize: isMobile ? '14px' : '16px', // Mobile: smaller font
                       fontWeight: '600',
-                      marginBottom: '8px'
+                      marginBottom: isMobile ? '6px' : '8px',
+                      height: isMobile ? '36px' : 'auto',
+                      overflow: 'hidden',
+                      lineHeight: '1.3'
                     }}>
                       {product.name}
                     </h3>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                      <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#EF4444' }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'center', 
+                      marginBottom: isMobile ? '10px' : '12px',
+                      flexWrap: isMobile ? 'wrap' : 'nowrap'
+                    }}>
+                      <span style={{ 
+                        fontSize: isMobile ? '16px' : '18px', // Mobile: smaller font
+                        fontWeight: 'bold', 
+                        color: '#EF4444',
+                        marginBottom: isMobile ? '4px' : '0'
+                      }}>
                         {product.price}
                       </span>
                       <span style={{
-                        fontSize: '14px',
+                        fontSize: isMobile ? '12px' : '14px', // Mobile: smaller font
                         color: '#6B7280',
                         textDecoration: 'line-through'
                       }}>
@@ -243,19 +285,19 @@ export default function SalePage() {
                       </span>
                     </div>
 
-                    {/* ✅ ADDED: Add to Cart Button */}
+                    {/* ✅ ADDED: Add to Cart Button - Mobile ke liye full width */}
                     <button 
                       onClick={() => handleAddToCart(product, category.name)}
                       style={{
                         width: '100%',
-                        padding: '10px',
+                        padding: isMobile ? '8px' : '10px', // Mobile: smaller padding
                         background: isAdded ? '#10B981' : category.color,
                         color: 'white',
                         border: 'none',
                         borderRadius: '8px',
                         fontWeight: 'bold',
                         cursor: 'pointer',
-                        fontSize: '14px',
+                        fontSize: isMobile ? '13px' : '14px', // Mobile: smaller font
                         transition: 'all 0.2s ease'
                       }}
                     >
@@ -269,18 +311,28 @@ export default function SalePage() {
         </div>
       ))}
 
-      {/* ✅ ADDED: Sale Tips Section */}
+      {/* ✅ ADDED: Sale Tips Section - Mobile responsive */}
       <div style={{
-        marginTop: '50px',
-        padding: '30px',
+        marginTop: isMobile ? '30px' : '50px',
+        padding: isMobile ? '20px' : '30px',
         background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)',
         borderRadius: '16px',
         textAlign: 'center'
       }}>
-        <h3 style={{ fontSize: '24px', fontWeight: 'bold', marginBottom: '16px', color: '#92400E' }}>
+        <h3 style={{ 
+          fontSize: isMobile ? '20px' : '24px', // Mobile: smaller font
+          fontWeight: 'bold', 
+          marginBottom: isMobile ? '12px' : '16px', 
+          color: '#92400E' 
+        }}>
           🎉 Flash Sale Tips
         </h3>
-        <p style={{ color: '#92400E', fontSize: '16px', maxWidth: '800px', margin: '0 auto' }}>
+        <p style={{ 
+          color: '#92400E', 
+          fontSize: isMobile ? '14px' : '16px', // Mobile: smaller font
+          maxWidth: '800px', 
+          margin: '0 auto' 
+        }}>
           Add items to cart quickly! Sale prices are limited and items sell out fast. 
           Don't miss your chance to save up to 70% on premium products.
         </p>

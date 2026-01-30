@@ -10,6 +10,18 @@ const Categories = () => {
   const [lensPosition, setLensPosition] = useState({ x: 50, y: 50 });
   const [cart, setCart] = useState<Array<{id: string, name: string, price: number, image: string}>>([]);
   const [addedItems, setAddedItems] = useState<{[key: string]: boolean}>({});
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const categories = [
     {
@@ -84,7 +96,7 @@ const Categories = () => {
   };
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>, index: number) => {
-    if (hoveredCard !== index) return;
+    if (hoveredCard !== index || isMobile) return;
     
     const rect = e.currentTarget.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -93,43 +105,53 @@ const Categories = () => {
   };
 
   return (
-    <section style={{ padding: '80px 20px', background: '#F9FAFB' }}>
+    <section style={{ padding: isMobile ? '40px 15px' : '80px 20px', background: '#F9FAFB' }}>
       <div style={{ maxWidth: '1280px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ 
           display: 'flex', 
+          flexDirection: isMobile ? 'column' : 'row',
           justifyContent: 'space-between', 
-          alignItems: 'center', 
-          marginBottom: '50px' 
+          alignItems: isMobile ? 'flex-start' : 'center', 
+          marginBottom: isMobile ? '30px' : '50px',
+          gap: isMobile ? '20px' : '0'
         }}>
           <div>
             <h2 style={{ 
-              fontSize: '36px', 
+              fontSize: isMobile ? '28px' : '36px', 
               fontWeight: 'bold', 
               marginBottom: '10px' 
             }}>
               Shop by Category
             </h2>
-            <p style={{ color: '#6B7280', fontSize: '18px' }}>
+            <p style={{ color: '#6B7280', fontSize: isMobile ? '16px' : '18px' }}>
               Discover collections for everyone
             </p>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: isMobile ? 'column' : 'row',
+            alignItems: isMobile ? 'flex-start' : 'center', 
+            gap: isMobile ? '10px' : '20px',
+            width: isMobile ? '100%' : 'auto'
+          }}>
             <Link 
               href="/cart"
               style={{ 
                 background: '#3B82F6',
                 color: 'white',
                 border: 'none',
-                padding: '8px 16px',
+                padding: isMobile ? '10px 20px' : '8px 16px',
                 borderRadius: '8px',
                 fontWeight: 'bold',
-                fontSize: '14px',
+                fontSize: isMobile ? '14px' : '14px',
                 cursor: 'pointer',
                 textDecoration: 'none',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
+                gap: '6px',
+                width: isMobile ? '100%' : 'auto',
+                justifyContent: 'center'
               }}
             >
               🛒 Cart ({cart.length})
@@ -141,25 +163,31 @@ const Categories = () => {
                 border: 'none',
                 color: '#8B5CF6', 
                 fontWeight: 'bold',
-                fontSize: '16px',
+                fontSize: isMobile ? '14px' : '16px',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '4px',
                 textDecoration: 'none',
-                padding: '8px 16px',
+                padding: isMobile ? '10px 20px' : '8px 16px',
                 borderRadius: '8px',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                width: isMobile ? '100%' : 'auto',
+                justifyContent: 'center'
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#F3F4F6';
-                e.currentTarget.style.paddingRight = '20px';
-                e.currentTarget.style.transform = 'translateX(5px)';
+                if (!isMobile) {
+                  e.currentTarget.style.backgroundColor = '#F3F4F6';
+                  e.currentTarget.style.paddingRight = '20px';
+                  e.currentTarget.style.transform = 'translateX(5px)';
+                }
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.paddingRight = '16px';
-                e.currentTarget.style.transform = 'translateX(0)';
+                if (!isMobile) {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.paddingRight = isMobile ? '20px' : '16px';
+                  e.currentTarget.style.transform = 'translateX(0)';
+                }
               }}
             >
               View all categories →
@@ -170,8 +198,10 @@ const Categories = () => {
         {/* Categories Grid with SMALL ELEGANT LENS */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-          gap: '24px'
+          gridTemplateColumns: isMobile ? 
+            'repeat(2, 1fr)' : // Mobile: 2 columns
+            'repeat(auto-fit, minmax(280px, 1fr))', // Desktop: responsive
+          gap: isMobile ? '16px' : '24px'
         }}>
           {categories.map((category, index) => (
             <div 
@@ -180,47 +210,51 @@ const Categories = () => {
                 background: 'white',
                 borderRadius: '16px',
                 overflow: 'hidden',
-                boxShadow: hoveredCard === index 
+                boxShadow: !isMobile && hoveredCard === index 
                   ? `0 20px 40px ${category.color}30` 
                   : '0 4px 20px rgba(0,0,0,0.05)',
                 transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                 height: '100%',
                 cursor: 'pointer',
-                transform: hoveredCard === index ? 'translateY(-10px) scale(1.02)' : 'translateY(0) scale(1)',
+                transform: !isMobile && hoveredCard === index ? 'translateY(-10px) scale(1.02)' : 'translateY(0) scale(1)',
                 position: 'relative',
-                border: hoveredCard === index ? `2px solid ${category.color}30` : '2px solid transparent'
+                border: !isMobile && hoveredCard === index ? `2px solid ${category.color}30` : '2px solid transparent'
               }}
               onClick={() => handleCategoryClick(category.title)}
-              onMouseEnter={() => setHoveredCard(index)}
+              onMouseEnter={() => !isMobile && setHoveredCard(index)}
               onMouseLeave={() => {
-                setHoveredCard(null);
-                setLensPosition({ x: 50, y: 50 });
+                if (!isMobile) {
+                  setHoveredCard(null);
+                  setLensPosition({ x: 50, y: 50 });
+                }
               }}
             >
-              {/* Animated Border Top */}
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: '4px',
-                background: `linear-gradient(90deg, ${category.color}, ${category.color}80)`,
-                transform: hoveredCard === index ? 'scaleX(1)' : 'scaleX(0)',
-                transformOrigin: 'left',
-                transition: 'transform 0.5s ease',
-                zIndex: 2
-              }} />
+              {/* Animated Border Top - Only on desktop */}
+              {!isMobile && (
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: '4px',
+                  background: `linear-gradient(90deg, ${category.color}, ${category.color}80)`,
+                  transform: hoveredCard === index ? 'scaleX(1)' : 'scaleX(0)',
+                  transformOrigin: 'left',
+                  transition: 'transform 0.5s ease',
+                  zIndex: 2
+                }} />
+              )}
               
-              {/* Category Image with SMALL LENS */}
+              {/* Category Image with SMALL LENS - Only on desktop */}
               <div 
                 style={{
                   position: 'relative',
-                  height: '200px',
+                  height: isMobile ? '120px' : '200px',
                   overflow: 'hidden'
                 }}
-                onMouseMove={(e) => handleMouseMove(e, index)}
+                onMouseMove={(e) => !isMobile && handleMouseMove(e, index)}
               >
-                {/* Main Image with Zoom */}
+                {/* Main Image with Zoom - Only on desktop */}
                 <div style={{
                   width: '100%',
                   height: '100%',
@@ -228,7 +262,7 @@ const Categories = () => {
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                   transition: 'transform 0.5s ease',
-                  transform: hoveredCard === index ? 'scale(1.1)' : 'scale(1)'
+                  transform: !isMobile && hoveredCard === index ? 'scale(1.1)' : 'scale(1)'
                 }} />
                 
                 {/* Gradient Overlay */}
@@ -239,12 +273,12 @@ const Categories = () => {
                   right: 0,
                   bottom: 0,
                   background: `linear-gradient(135deg, ${category.color}40, ${category.color}20)`,
-                  opacity: hoveredCard === index ? 0.8 : 0.4,
+                  opacity: !isMobile && hoveredCard === index ? 0.8 : 0.4,
                   transition: 'opacity 0.3s ease'
                 }} />
                 
-                {/* SMALL ELEGANT LENS - Only shows on hover */}
-                {hoveredCard === index && (
+                {/* SMALL ELEGANT LENS - Only shows on hover (desktop only) */}
+                {!isMobile && hoveredCard === index && (
                   <div style={{
                     position: 'absolute',
                     width: '80px',
@@ -275,90 +309,112 @@ const Categories = () => {
                   </div>
                 )}
                 
-                {/* Hover Buttons */}
-                <div style={{
-                  position: 'absolute',
-                  bottom: '20px',
-                  left: '50%',
-                  transform: hoveredCard === index 
-                    ? 'translateX(-50%) translateY(0)' 
-                    : 'translateX(-50%) translateY(20px)',
-                  opacity: hoveredCard === index ? 1 : 0,
-                  transition: 'all 0.3s ease',
-                  display: 'flex',
-                  gap: '10px',
-                  zIndex: 6
-                }}>
-                  <button
-                    style={{
-                      background: 'white',
-                      color: category.color,
-                      border: 'none',
-                      padding: '10px 20px',
-                      borderRadius: '25px',
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCategoryClick(category.title);
-                    }}
-                  >
-                    Shop Now
-                    <span style={{ 
-                      transition: 'transform 0.3s ease',
-                      transform: hoveredCard === index ? 'translateX(5px)' : 'translateX(0)'
-                    }}>
-                      →
-                    </span>
-                  </button>
-                  
-                  <button
-                    style={{
-                      background: addedItems[category.title] ? category.color : 'white',
-                      color: addedItems[category.title] ? 'white' : category.color,
-                      border: `2px solid ${category.color}`,
-                      padding: '10px 20px',
-                      borderRadius: '25px',
-                      fontWeight: 'bold',
-                      fontSize: '14px',
-                      cursor: 'pointer',
-                      boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onClick={(e) => handleAddToCart(e, category)}
-                  >
-                    {addedItems[category.title] ? '✓ Added' : '🛒 Add to Cart'}
-                  </button>
-                </div>
+                {/* Hover Buttons - Only on desktop */}
+                {!isMobile && (
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    left: '50%',
+                    transform: hoveredCard === index 
+                      ? 'translateX(-50%) translateY(0)' 
+                      : 'translateX(-50%) translateY(20px)',
+                    opacity: hoveredCard === index ? 1 : 0,
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    gap: '10px',
+                    zIndex: 6
+                  }}>
+                    <button
+                      style={{
+                        background: 'white',
+                        color: category.color,
+                        border: 'none',
+                        padding: '10px 20px',
+                        borderRadius: '25px',
+                        fontWeight: 'bold',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCategoryClick(category.title);
+                      }}
+                    >
+                      Shop Now
+                      <span style={{ 
+                        transition: 'transform 0.3s ease',
+                        transform: hoveredCard === index ? 'translateX(5px)' : 'translateX(0)'
+                      }}>
+                        →
+                      </span>
+                    </button>
+                    
+                    <button
+                      style={{
+                        background: addedItems[category.title] ? category.color : 'white',
+                        color: addedItems[category.title] ? 'white' : category.color,
+                        border: `2px solid ${category.color}`,
+                        padding: '10px 20px',
+                        borderRadius: '25px',
+                        fontWeight: 'bold',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onClick={(e) => handleAddToCart(e, category)}
+                    >
+                      {addedItems[category.title] ? '✓ Added' : '🛒 Add to Cart'}
+                    </button>
+                  </div>
+                )}
+                
+                {/* Mobile Tap Message */}
+                {isMobile && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    padding: '8px 16px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: 'bold',
+                    color: category.color,
+                    zIndex: 6
+                  }}>
+                    Tap to Explore →
+                  </div>
+                )}
               </div>
               
               {/* Category Info */}
-              <div style={{ padding: '24px' }}>
+              <div style={{ padding: isMobile ? '16px' : '24px' }}>
                 <h3 style={{ 
-                  fontSize: '22px', 
+                  fontSize: isMobile ? '18px' : '22px', 
                   fontWeight: 'bold', 
-                  marginBottom: '10px',
-                  color: hoveredCard === index ? category.color : '#1F2937',
+                  marginBottom: isMobile ? '8px' : '10px',
+                  color: !isMobile && hoveredCard === index ? category.color : '#1F2937',
                   transition: 'color 0.3s ease'
                 }}>
                   {category.title}
                 </h3>
                 <p style={{ 
                   color: '#6B7280', 
-                  marginBottom: '15px',
+                  marginBottom: isMobile ? '12px' : '15px',
                   lineHeight: 1.5,
-                  height: '42px',
-                  overflow: 'hidden'
+                  height: isMobile ? '36px' : '42px',
+                  overflow: 'hidden',
+                  fontSize: isMobile ? '13px' : '14px'
                 }}>
                   {category.description}
                 </p>
@@ -367,34 +423,34 @@ const Categories = () => {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   borderTop: '1px solid #F3F4F6',
-                  paddingTop: '15px'
+                  paddingTop: isMobile ? '12px' : '15px'
                 }}>
                   <span style={{ 
-                    fontSize: '14px', 
+                    fontSize: isMobile ? '12px' : '14px', 
                     fontWeight: '600',
                     color: category.color,
-                    transition: 'transform 0.3s ease',
-                    transform: hoveredCard === index ? 'scale(1.1)' : 'scale(1)'
+                    transition: !isMobile ? 'transform 0.3s ease' : 'none',
+                    transform: !isMobile && hoveredCard === index ? 'scale(1.1)' : 'scale(1)'
                   }}>
                     {category.count}
                   </span>
                   <div style={{ 
-                    width: '30px',
-                    height: '30px',
+                    width: isMobile ? '24px' : '30px',
+                    height: isMobile ? '24px' : '30px',
                     borderRadius: '50%',
                     background: `${category.color}20`,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transition: 'all 0.3s ease',
-                    transform: hoveredCard === index ? 'rotate(90deg)' : 'rotate(0)'
+                    transition: !isMobile ? 'all 0.3s ease' : 'none',
+                    transform: !isMobile && hoveredCard === index ? 'rotate(90deg)' : 'rotate(0)'
                   }}>
                     <span style={{ 
                       color: category.color,
-                      fontSize: '16px',
+                      fontSize: isMobile ? '14px' : '16px',
                       fontWeight: 'bold',
-                      transition: 'transform 0.3s ease',
-                      transform: hoveredCard === index ? 'translateX(3px)' : 'translateX(0)'
+                      transition: !isMobile ? 'transform 0.3s ease' : 'none',
+                      transform: !isMobile && hoveredCard === index ? 'translateX(3px)' : 'translateX(0)'
                     }}>
                       →
                     </span>

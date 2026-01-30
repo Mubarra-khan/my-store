@@ -12,9 +12,21 @@ function WomenPageContent() {
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [addedItems, setAddedItems] = useState<{[key: number]: boolean}>({});
+  const [isMobile, setIsMobile] = useState(false);
   
   // @ts-ignore
   const { addToCart, cart } = useCart();
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   useEffect(() => {
     if (queryCategory) {
@@ -126,12 +138,12 @@ function WomenPageContent() {
     <div style={{ 
       maxWidth: "1280px", 
       margin: "0 auto", 
-      padding: "20px 16px",
+      padding: isMobile ? "15px 12px" : "20px 16px",
       width: "100%",
       boxSizing: "border-box"
     }}>
       <h1 style={{ 
-        fontSize: "clamp(24px, 5vw, 36px)", 
+        fontSize: isMobile ? "24px" : "clamp(24px, 5vw, 36px)", 
         fontWeight: "bold", 
         marginBottom: "8px",
         textAlign: "center"
@@ -140,8 +152,8 @@ function WomenPageContent() {
       </h1>
       <p style={{ 
         color: "#6B7280", 
-        marginBottom: "32px",
-        fontSize: "clamp(14px, 3vw, 16px)",
+        marginBottom: isMobile ? "24px" : "32px",
+        fontSize: isMobile ? "14px" : "clamp(14px, 3vw, 16px)",
         textAlign: "center"
       }}>
         Elegant Dresses & Trousers for women
@@ -150,8 +162,8 @@ function WomenPageContent() {
       <div style={{ 
         display: "flex", 
         flexWrap: "wrap", 
-        gap: "8px", 
-        marginBottom: "24px",
+        gap: isMobile ? "6px" : "8px", 
+        marginBottom: isMobile ? "20px" : "24px",
         justifyContent: "center"
       }}>
         {categories.map(cat => (
@@ -159,7 +171,7 @@ function WomenPageContent() {
             key={cat}
             onClick={() => setSelectedCategory(cat === "All" ? null : cat)}
             style={{
-              padding: "8px 16px",
+              padding: isMobile ? "6px 12px" : "8px 16px",
               borderRadius: "25px",
               border: "1px solid #d1d5db",
               background: selectedCategory === cat || (cat === "All" && !selectedCategory) 
@@ -170,9 +182,9 @@ function WomenPageContent() {
                 : "#374151",
               fontWeight: "600",
               cursor: "pointer",
-              fontSize: "13px",
+              fontSize: isMobile ? "12px" : "13px",
               whiteSpace: "nowrap",
-              minWidth: "90px",
+              minWidth: isMobile ? "80px" : "90px",
               textAlign: "center"
             }}
           >
@@ -183,14 +195,14 @@ function WomenPageContent() {
       
       {selectedCategory && selectedCategory !== "All" && (
         <div style={{ 
-          marginBottom: "24px", 
-          padding: "16px",
+          marginBottom: isMobile ? "20px" : "24px", 
+          padding: isMobile ? "12px" : "16px",
           background: "#fdf2f8",
           borderRadius: "10px",
           textAlign: "center"
         }}>
           <h2 style={{ 
-            fontSize: "18px", 
+            fontSize: isMobile ? "16px" : "18px", 
             fontWeight: "bold", 
             marginBottom: "4px",
             color: "#EC4899"
@@ -198,7 +210,7 @@ function WomenPageContent() {
             {selectedCategory} 
             <span style={{ 
               color: "#6B7280", 
-              fontSize: "14px", 
+              fontSize: isMobile ? "13px" : "14px", 
               marginLeft: "8px",
               fontWeight: "normal"
             }}>
@@ -211,8 +223,10 @@ function WomenPageContent() {
       {filteredProducts.length > 0 ? (
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-          gap: "25px"
+          gridTemplateColumns: isMobile ? 
+            "repeat(2, 1fr)" : // Mobile: 2 columns
+            "repeat(auto-fill, minmax(250px, 1fr))", // Desktop: responsive
+          gap: isMobile ? "12px" : "25px" // Smaller gap on mobile
         }}>
           {filteredProducts.map(product => (
             <div key={product.id} style={{
@@ -223,7 +237,7 @@ function WomenPageContent() {
               transition: "transform 0.2s"
             }}>
               <div style={{
-                height: "250px",
+                height: isMobile ? "180px" : "250px", // Smaller image on mobile
                 position: "relative",
                 background: "#f9fafb"
               }}>
@@ -246,7 +260,7 @@ function WomenPageContent() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "40px",
+                    fontSize: isMobile ? "32px" : "40px",
                     color: "#d1d5db"
                   }}>
                     {product.category === "Dresses" && ""}
@@ -257,13 +271,13 @@ function WomenPageContent() {
                 {addedItems[product.id] && (
                   <div style={{
                     position: "absolute",
-                    top: "10px",
-                    left: "10px",
+                    top: isMobile ? "8px" : "10px",
+                    left: isMobile ? "8px" : "10px",
                     background: "#EC4899",
                     color: "white",
-                    fontSize: "10px",
+                    fontSize: isMobile ? "9px" : "10px",
                     fontWeight: "bold",
-                    padding: "5px 10px",
+                    padding: isMobile ? "3px 8px" : "5px 10px",
                     borderRadius: "4px",
                     zIndex: 2
                   }}>
@@ -272,15 +286,36 @@ function WomenPageContent() {
                 )}
               </div>
               
-              <div style={{ padding: "20px" }}>
-                <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}>
+              <div style={{ padding: isMobile ? "14px" : "20px" }}>
+                <h3 style={{ 
+                  fontSize: isMobile ? "14px" : "16px", 
+                  fontWeight: "600", 
+                  marginBottom: isMobile ? "6px" : "8px",
+                  height: isMobile ? "36px" : "auto",
+                  overflow: "hidden",
+                  lineHeight: "1.3"
+                }}>
                   {product.name}
                 </h3>
-                <p style={{ color: "#6B7280", fontSize: "14px", marginBottom: "8px" }}>
+                <p style={{ 
+                  color: "#6B7280", 
+                  fontSize: isMobile ? "12px" : "14px", 
+                  marginBottom: isMobile ? "6px" : "8px" 
+                }}>
                   {product.category}
                 </p>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "18px", fontWeight: "bold", color: "#EC4899" }}>
+                <div style={{ 
+                  display: "flex", 
+                  justifyContent: "space-between", 
+                  alignItems: "center",
+                  flexWrap: isMobile ? "wrap" : "nowrap"
+                }}>
+                  <span style={{ 
+                    fontSize: isMobile ? "16px" : "18px", 
+                    fontWeight: "bold", 
+                    color: "#EC4899",
+                    marginBottom: isMobile ? "4px" : "0"
+                  }}>
                     ${product.price}
                   </span>
                   <button 
@@ -292,10 +327,12 @@ function WomenPageContent() {
                       background: addedItems[product.id] ? "#10B981" : "#EC4899",
                       color: "white",
                       border: "none",
-                      padding: "8px 16px",
+                      padding: isMobile ? "6px 12px" : "8px 16px",
                       borderRadius: "6px",
                       fontWeight: "600",
-                      cursor: "pointer"
+                      cursor: "pointer",
+                      fontSize: isMobile ? "13px" : "14px",
+                      width: isMobile ? "100%" : "auto"
                     }}
                   >
                     {addedItems[product.id] ? " Added" : "Add to Cart"}
@@ -306,25 +343,36 @@ function WomenPageContent() {
           ))}
         </div>
       ) : (
-        <div style={{ textAlign: "center", padding: "60px 20px", color: "#6b7280" }}>
-          <div style={{ fontSize: "48px", marginBottom: "20px" }}>
+        <div style={{ 
+          textAlign: "center", 
+          padding: isMobile ? "40px 15px" : "60px 20px", 
+          color: "#6b7280" 
+        }}>
+          <div style={{ 
+            fontSize: isMobile ? "36px" : "48px", 
+            marginBottom: isMobile ? "16px" : "20px" 
+          }}>
             
           </div>
-          <h3 style={{ fontSize: "20px", marginBottom: "10px" }}>
+          <h3 style={{ 
+            fontSize: isMobile ? "18px" : "20px", 
+            marginBottom: isMobile ? "8px" : "10px" 
+          }}>
             No products found
           </h3>
-          <p>Check the category name in URL and product data.</p>
+          <p style={{ fontSize: isMobile ? "14px" : "16px" }}>Check the category name in URL and product data.</p>
           <button
             onClick={() => setSelectedCategory(null)}
             style={{
-              marginTop: "20px",
-              padding: "10px 20px",
+              marginTop: isMobile ? "16px" : "20px",
+              padding: isMobile ? "8px 16px" : "10px 20px",
               background: "#EC4899",
               color: "white",
               border: "none",
               borderRadius: "6px",
               cursor: "pointer",
-              fontWeight: "600"
+              fontWeight: "600",
+              fontSize: isMobile ? "14px" : "16px"
             }}
           >
             Show All Products
@@ -332,19 +380,21 @@ function WomenPageContent() {
         </div>
       )}
       
-      <div style={{
-        marginTop: "40px",
-        padding: "15px",
-        background: "#F3F4F6",
-        borderRadius: "8px",
-        fontSize: "14px",
-        color: "#374151"
-      }}>
-        <div style={{ fontWeight: "bold", marginBottom: "8px" }}>Debug Info:</div>
-        <div>Total Products: {products.length}</div>
-        <div>Cart Items Count: {cart?.length || 0}</div>
-        <div>Selected Category: {selectedCategory || "All"}</div>
-      </div>
+      {!isMobile && (
+        <div style={{
+          marginTop: "40px",
+          padding: "15px",
+          background: "#F3F4F6",
+          borderRadius: "8px",
+          fontSize: "14px",
+          color: "#374151"
+        }}>
+          <div style={{ fontWeight: "bold", marginBottom: "8px" }}>Debug Info:</div>
+          <div>Total Products: {products.length}</div>
+          <div>Cart Items Count: {cart?.length || 0}</div>
+          <div>Selected Category: {selectedCategory || "All"}</div>
+        </div>
+      )}
     </div>
   );
 }

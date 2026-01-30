@@ -39,6 +39,18 @@ const categories = [
 
 export default function CategoryGrid() {
   const [currentHoverIndex, setCurrentHoverIndex] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -52,17 +64,23 @@ export default function CategoryGrid() {
     <>
       <section className="py-16 relative overflow-hidden">
         {/* Animated background elements */}
-        <div className="absolute top-10 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute bottom-10 right-10 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+        {!isMobile && (
+          <>
+            <div className="absolute top-10 left-10 w-72 h-72 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
+            <div className="absolute bottom-10 right-10 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
+          </>
+        )}
         
         <div className="container mx-auto px-4 relative z-10">
           <h2 className="text-3xl font-bold text-center mb-12 animate-fade-in">
             Shop by Category
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          
+          {/* ✅ Mobile: grid-cols-2, Desktop: grid-cols-3 */}
+          <div className={`grid ${isMobile ? 'grid-cols-2' : 'grid-cols-1 md:grid-cols-3'} gap-4 md:gap-8`}>
             {categories.map((category, index) => {
               const Icon = category.icon;
-              const isAutoHovered = currentHoverIndex === index;
+              const isAutoHovered = currentHoverIndex === index && !isMobile; // Only auto-hover on desktop
               
               return (
                 <Link
@@ -70,54 +88,60 @@ export default function CategoryGrid() {
                   href={category.href}
                   className={`
                     ${category.bgColor} 
-                    rounded-2xl p-8 text-center 
+                    rounded-2xl p-6 md:p-8 text-center 
                     transition-all duration-500 ease-in-out
                     relative overflow-hidden
                     border-2 ${isAutoHovered ? category.borderColor : 'border-transparent'}
                     transform ${isAutoHovered ? 'scale-105 -translate-y-2' : 'scale-100 translate-y-0'}
-                    shadow-lg hover:shadow-2xl
+                    ${isMobile ? 'shadow-md' : 'shadow-lg hover:shadow-2xl'}
                     cursor-pointer
                   `}
-                  onMouseEnter={() => setCurrentHoverIndex(index)}
+                  onMouseEnter={() => !isMobile && setCurrentHoverIndex(index)}
                   onMouseLeave={() => {}}
                 >
-                  {/* Hover shine effect */}
-                  <div className={`
-                    absolute top-0 left-full w-full h-full 
-                    bg-gradient-to-r from-transparent via-white/30 to-transparent
-                    transition-all duration-700
-                    ${isAutoHovered ? 'left-full' : '-left-full'}
-                  `}></div>
+                  {/* Hover shine effect - Only on desktop */}
+                  {!isMobile && (
+                    <div className={`
+                      absolute top-0 left-full w-full h-full 
+                      bg-gradient-to-r from-transparent via-white/30 to-transparent
+                      transition-all duration-700
+                      ${isAutoHovered ? 'left-full' : '-left-full'}
+                    `}></div>
+                  )}
                   
-                  {/* Pulsing border animation */}
-                  <div className={`
-                    absolute inset-0 rounded-2xl border-2 ${category.borderColor}
-                    opacity-0 ${isAutoHovered ? 'animate-pulse-border' : ''}
-                  `}></div>
+                  {/* Pulsing border animation - Only on desktop */}
+                  {!isMobile && (
+                    <div className={`
+                      absolute inset-0 rounded-2xl border-2 ${category.borderColor}
+                      opacity-0 ${isAutoHovered ? 'animate-pulse-border' : ''}
+                    `}></div>
+                  )}
 
                   {/* Icon with animation */}
                   <div className={`
-                    inline-flex items-center justify-center w-16 h-16 rounded-full bg-white mb-4
+                    inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full bg-white mb-3 md:mb-4
                     relative z-10
                     transform ${isAutoHovered ? 'rotate-12 scale-110' : 'rotate-0 scale-100'}
                     transition-all duration-500
-                    shadow-lg
+                    ${isMobile ? 'shadow-md' : 'shadow-lg'}
                   `}>
                     <Icon className={`
-                      h-8 w-8 ${category.textColor}
+                      h-6 w-6 md:h-8 md:w-8 ${category.textColor}
                       transform ${isAutoHovered ? 'scale-125' : 'scale-100'}
                       transition-transform duration-500
                     `} />
                     
-                    {/* Pulsing circle behind icon */}
-                    <div className={`
-                      absolute inset-0 rounded-full ${category.textColor.replace('text-', 'bg-')}
-                      opacity-10 ${isAutoHovered ? 'animate-ping' : ''}
-                    `}></div>
+                    {/* Pulsing circle behind icon - Only on desktop */}
+                    {!isMobile && (
+                      <div className={`
+                        absolute inset-0 rounded-full ${category.textColor.replace('text-', 'bg-')}
+                        opacity-10 ${isAutoHovered ? 'animate-ping' : ''}
+                      `}></div>
+                    )}
                   </div>
                   
                   <h3 className={`
-                    text-2xl font-bold mb-2 relative z-10
+                    text-lg md:text-2xl font-bold mb-1 md:mb-2 relative z-10
                     transform ${isAutoHovered ? 'translate-y-1' : 'translate-y-0'}
                     transition-transform duration-500
                     ${isAutoHovered ? category.textColor : 'text-gray-900'}
@@ -126,16 +150,17 @@ export default function CategoryGrid() {
                   </h3>
                   
                   <p className={`
-                    text-gray-600 relative z-10
+                    text-xs md:text-base text-gray-600 relative z-10
                     transform ${isAutoHovered ? 'translate-y-1' : 'translate-y-0'}
                     transition-transform duration-500
                     ${isAutoHovered ? 'font-medium' : 'font-normal'}
+                    ${isMobile ? 'px-2' : ''}
                   `}>
                     {category.description}
                   </p>
 
-                  {/* Floating animation indicators */}
-                  {isAutoHovered && (
+                  {/* Floating animation indicators - Only on desktop */}
+                  {!isMobile && isAutoHovered && (
                     <div className="absolute bottom-4 right-4 flex space-x-1">
                       {[1, 2, 3].map((dot) => (
                         <div 
@@ -151,14 +176,23 @@ export default function CategoryGrid() {
                     </div>
                   )}
 
-                  {/* Arrow indicator */}
-                  <div className={`
-                    absolute top-4 right-4 text-gray-400
-                    transform ${isAutoHovered ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'}
-                    transition-all duration-500
-                  `}>
-                    →
-                  </div>
+                  {/* Arrow indicator - Only on desktop */}
+                  {!isMobile && (
+                    <div className={`
+                      absolute top-4 right-4 text-gray-400
+                      transform ${isAutoHovered ? 'translate-x-0 opacity-100' : 'translate-x-4 opacity-0'}
+                      transition-all duration-500
+                    `}>
+                      →
+                    </div>
+                  )}
+                  
+                  {/* Mobile indicator */}
+                  {isMobile && (
+                    <div className="mt-2 text-xs text-gray-500">
+                      Tap to explore →
+                    </div>
+                  )}
                 </Link>
               );
             })}

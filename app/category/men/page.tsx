@@ -12,8 +12,20 @@ function MenPageContent() {
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [addedItems, setAddedItems] = useState<{[key: number]: boolean}>({});
+  const [isMobile, setIsMobile] = useState(false);
   
   const { addToCart } = useCart();
+  
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   useEffect(() => {
     console.log("Query Category from URL:", queryCategory);
@@ -147,12 +159,12 @@ function MenPageContent() {
     <div style={{ 
       maxWidth: "1280px", 
       margin: "0 auto", 
-      padding: "20px 16px",
+      padding: isMobile ? "15px 12px" : "20px 16px",
       width: "100%",
       boxSizing: "border-box"
     }}>
       <h1 style={{ 
-        fontSize: "clamp(24px, 5vw, 36px)", 
+        fontSize: isMobile ? "24px" : "clamp(24px, 5vw, 36px)", 
         fontWeight: "bold", 
         marginBottom: "8px",
         textAlign: "center"
@@ -161,8 +173,8 @@ function MenPageContent() {
       </h1>
       <p style={{ 
         color: "#6B7280", 
-        marginBottom: "32px",
-        fontSize: "clamp(14px, 3vw, 16px)",
+        marginBottom: isMobile ? "24px" : "32px",
+        fontSize: isMobile ? "14px" : "clamp(14px, 3vw, 16px)",
         textAlign: "center"
       }}>
         Premium clothing for men - Jackets, T-Shirts, Shirts, Hoodies, Suits & Trousers
@@ -171,9 +183,9 @@ function MenPageContent() {
       <div style={{ 
         display: "flex", 
         flexWrap: "wrap", 
-        gap: "8px", 
-        marginBottom: "24px",
-        paddingBottom: "20px",
+        gap: isMobile ? "6px" : "8px", 
+        marginBottom: isMobile ? "20px" : "24px",
+        paddingBottom: isMobile ? "16px" : "20px",
         borderBottom: "1px solid #e5e7eb",
         justifyContent: "center"
       }}>
@@ -182,7 +194,7 @@ function MenPageContent() {
             key={cat}
             onClick={() => setSelectedCategory(cat === "All" ? null : cat)}
             style={{
-              padding: "8px 14px",
+              padding: isMobile ? "6px 12px" : "8px 14px",
               borderRadius: "25px",
               border: "1px solid #d1d5db",
               background: selectedCategory === cat || (cat === "All" && !selectedCategory) 
@@ -194,9 +206,9 @@ function MenPageContent() {
               fontWeight: "600",
               cursor: "pointer",
               transition: "all 0.2s",
-              fontSize: "13px",
+              fontSize: isMobile ? "12px" : "13px",
               whiteSpace: "nowrap",
-              minWidth: "80px",
+              minWidth: isMobile ? "70px" : "80px",
               textAlign: "center"
             }}
           >
@@ -207,21 +219,21 @@ function MenPageContent() {
       
       {selectedCategory && selectedCategory !== "All" && (
         <div style={{ 
-          marginBottom: "24px", 
-          padding: "16px",
+          marginBottom: isMobile ? "20px" : "24px", 
+          padding: isMobile ? "12px" : "16px",
           background: "#f8fafc",
           borderRadius: "10px",
           textAlign: "center"
         }}>
           <h2 style={{ 
-            fontSize: "18px", 
+            fontSize: isMobile ? "16px" : "18px", 
             fontWeight: "bold", 
             marginBottom: "4px" 
           }}>
             {selectedCategory} 
             <span style={{ 
               color: "#6B7280", 
-              fontSize: "14px", 
+              fontSize: isMobile ? "13px" : "14px", 
               marginLeft: "8px",
               fontWeight: "normal"
             }}>
@@ -230,7 +242,7 @@ function MenPageContent() {
           </h2>
           <p style={{ 
             color: "#3B82F6", 
-            fontSize: "12px",
+            fontSize: isMobile ? "11px" : "12px",
             marginTop: "4px"
           }}>
             Active Filter: {selectedCategory}
@@ -241,8 +253,10 @@ function MenPageContent() {
       {filteredProducts.length > 0 ? (
         <div style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
-          gap: "25px"
+          gridTemplateColumns: isMobile ? 
+            "repeat(2, 1fr)" : // Mobile: 2 columns
+            "repeat(auto-fill, minmax(250px, 1fr))", // Desktop: responsive
+          gap: isMobile ? "12px" : "25px" // Smaller gap on mobile
         }}>
           {filteredProducts.map(product => (
             <div key={product.id} style={{
@@ -252,7 +266,7 @@ function MenPageContent() {
               boxShadow: "0 4px 15px rgba(0,0,0,0.08)"
             }}>
               <div style={{
-                height: "250px",
+                height: isMobile ? "180px" : "250px", // Smaller image on mobile
                 position: "relative",
                 overflow: "hidden",
                 background: "#f9fafb"
@@ -276,7 +290,7 @@ function MenPageContent() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "40px",
+                    fontSize: isMobile ? "32px" : "40px",
                     color: "#d1d5db"
                   }}>
                     {product.category === "Jackets" && ""}
@@ -291,13 +305,13 @@ function MenPageContent() {
                 {addedItems[product.id] && (
                   <div style={{
                     position: "absolute",
-                    top: "10px",
-                    left: "10px",
+                    top: isMobile ? "6px" : "10px",
+                    left: isMobile ? "6px" : "10px",
                     background: "#10B981",
                     color: "white",
-                    fontSize: "10px",
+                    fontSize: isMobile ? "9px" : "10px",
                     fontWeight: "bold",
-                    padding: "5px 10px",
+                    padding: isMobile ? "3px 8px" : "5px 10px",
                     borderRadius: "4px",
                     zIndex: 2
                   }}>
@@ -306,15 +320,35 @@ function MenPageContent() {
                 )}
               </div>
               
-              <div style={{ padding: "20px" }}>
-                <h3 style={{ fontSize: "16px", fontWeight: "600", marginBottom: "8px" }}>
+              <div style={{ padding: isMobile ? "14px" : "20px" }}>
+                <h3 style={{ 
+                  fontSize: isMobile ? "14px" : "16px", 
+                  fontWeight: "600", 
+                  marginBottom: isMobile ? "6px" : "8px",
+                  height: isMobile ? "36px" : "auto",
+                  overflow: "hidden",
+                  lineHeight: "1.3"
+                }}>
                   {product.name}
                 </h3>
-                <p style={{ color: "#6B7280", fontSize: "14px", marginBottom: "8px" }}>
+                <p style={{ 
+                  color: "#6B7280", 
+                  fontSize: isMobile ? "12px" : "14px", 
+                  marginBottom: isMobile ? "6px" : "8px" 
+                }}>
                   Category: {product.category}
                 </p>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "18px", fontWeight: "bold" }}>
+                <div style={{ 
+                  display: "flex", 
+                  justifyContent: "space-between", 
+                  alignItems: "center",
+                  flexWrap: isMobile ? "wrap" : "nowrap"
+                }}>
+                  <span style={{ 
+                    fontSize: isMobile ? "16px" : "18px", 
+                    fontWeight: "bold",
+                    marginBottom: isMobile ? "4px" : "0"
+                  }}>
                     ${product.price}
                   </span>
                   <button 
@@ -323,10 +357,12 @@ function MenPageContent() {
                       background: addedItems[product.id] ? "#10B981" : "#111827",
                       color: "white",
                       border: "none",
-                      padding: "8px 16px",
+                      padding: isMobile ? "6px 12px" : "8px 16px",
                       borderRadius: "6px",
                       fontWeight: "600",
-                      cursor: "pointer"
+                      cursor: "pointer",
+                      fontSize: isMobile ? "13px" : "14px",
+                      width: isMobile ? "100%" : "auto"
                     }}
                   >
                     {addedItems[product.id] ? " Added" : "Add to Cart"}
@@ -337,11 +373,18 @@ function MenPageContent() {
           ))}
         </div>
       ) : (
-        <div style={{ textAlign: "center", padding: "60px 20px", color: "#6b7280" }}>
-          <h3 style={{ fontSize: "20px", marginBottom: "10px" }}>
+        <div style={{ 
+          textAlign: "center", 
+          padding: isMobile ? "40px 15px" : "60px 20px", 
+          color: "#6b7280" 
+        }}>
+          <h3 style={{ 
+            fontSize: isMobile ? "18px" : "20px", 
+            marginBottom: isMobile ? "8px" : "10px" 
+          }}>
             No products found in "{selectedCategory}"
           </h3>
-          <p>Check the category name in URL and product data.</p>
+          <p style={{ fontSize: isMobile ? "14px" : "16px" }}>Check the category name in URL and product data.</p>
         </div>
       )}
     </div>

@@ -235,13 +235,13 @@ const { addToCart, cart } = useCart();
             </p>
           </div>
 
-          {/* ✅ UPDATED: Responsive Products Grid */}
+          {/* ✅ UPDATED: Mobile 2 columns, Desktop same */}
           <div style={{
             display: 'grid',
             gridTemplateColumns: isMobile ? 
-              'repeat(1, 1fr)' : // Mobile: 1 column
-              'repeat(auto-fit, minmax(260px, 1fr))', // Desktop: responsive
-            gap: isMobile ? '20px' : '24px'
+              'repeat(2, 1fr)' : // Mobile: 2 columns (do do pics)
+              'repeat(auto-fit, minmax(260px, 1fr))', // Desktop: same
+            gap: isMobile ? '12px' : '24px' // Mobile gap kam
           }}>
             {products.map((product, index) => (
               <div 
@@ -253,7 +253,7 @@ const { addToCart, cart } = useCart();
                   boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
                   transition: 'all 0.3s ease',
                   position: 'relative',
-                  height: isMobile ? '340px' : '380px', // Mobile: shorter
+                  height: isMobile ? '340px' : '380px',
                   display: 'flex',
                   flexDirection: 'column',
                   cursor: 'pointer',
