@@ -107,7 +107,7 @@ const Header = () => {
           {/* top bar */}
           <div className="flex items-center justify-between px-3 py-3">
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-              {isMobileMenuOpen ? <X /> : <Menu />}
+              {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
 
             <Link
@@ -118,10 +118,17 @@ const Header = () => {
             </Link>
 
             <div className="flex gap-3 items-center">
-              {/* Search Button for Mobile */}
-              <button onClick={() => setShowSearch(true)}>
-                🔍
-              </button>
+              {/* Mobile Search Bar - Chota sa */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-24 py-1 px-2 text-xs border rounded-full focus:outline-none focus:ring-1 focus:ring-gray-400"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                />
+              </div>
               
               <Link href="/cart" className="relative">
                 <ShoppingBag size={20} />
@@ -244,22 +251,26 @@ const Header = () => {
                   </Link>
                 </nav>
 
-                {/* Actions */}
+                {/* Desktop Actions - Professional Search Icon */}
                 <div className="flex items-center space-x-4 md:space-x-6">
                   <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2">
                     {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
                   </button>
 
-                  <button onClick={() => setShowSearch(true)} className="p-2 hover:text-purple-600 transition">
-                    🔍
+                  {/* Professional Search Icon */}
+                  <button 
+                    onClick={() => setShowSearch(true)} 
+                    className="p-2 hover:text-gray-700 transition"
+                  >
+                    <Search size={20} className="text-gray-600 hover:text-gray-900" />
                   </button>
 
                   <div className="hidden md:block">
                     <AuthButtons />
                   </div>
 
-                  <Link href="/cart" className="relative p-2 hover:text-purple-600 transition">
-                    <ShoppingBag size={20} />
+                  <Link href="/cart" className="relative p-2 hover:text-gray-700 transition">
+                    <ShoppingBag size={20} className="text-gray-600 hover:text-gray-900" />
                     {cartCount > 0 && (
                       <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {cartCount > 9 ? '9+' : cartCount}
