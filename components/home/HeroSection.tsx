@@ -157,7 +157,7 @@ const HeroSection = () => {
           {/* Animated Description */}
           <p style={{
             fontSize: '18px',
-            opacity: 0.9,
+            
             marginBottom: '40px',
             lineHeight: 1.6,
             opacity: 0,

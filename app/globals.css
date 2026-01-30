@@ -199,3 +199,6 @@ button:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: #a1a1a1;
 }
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}

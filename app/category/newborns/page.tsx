@@ -1,18 +1,18 @@
-// app/category/newborns/page.tsx - EXACTLY KIDS PAGE KI TARAH CARD SIZES
-"use client";
+﻿"use client";
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useCart } from '@/components/providers/CartProvider'; // 👈 ADDED: CartProvider import
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { useCart } from "@/components/providers/CartProvider";
+import { Suspense } from "react";
 
-export default function NewbornsCategory() {
+// Content component
+function NewbornsPageContent() {
   const searchParams = useSearchParams();
-  const queryCategory = searchParams.get('category');
+  const queryCategory = searchParams.get("category");
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [addedItems, setAddedItems] = useState<{[key: number]: boolean}>({}); // 👈 ADDED: For feedback
+  const [addedItems, setAddedItems] = useState<{[key: number]: boolean}>({});
   
-  // 👇 ADDED: CartProvider hook
   const { addToCart } = useCart();
   
   useEffect(() => {
@@ -23,19 +23,18 @@ export default function NewbornsCategory() {
     }
   }, [queryCategory]);
   
-  // ✅ Sirf 1 category - Baby Dresses
   const generateProducts = () => {
     const categories = [
       { 
         displayName: "Baby Dresses", 
         folder: "dresses", 
         imagePrefix: "dress",
-        count: 16, // dress1.jpg to dress16.jpg
+        count: 16,
         basePrice: 19.99
       }
     ];
     
-    let products = [];
+    let products: any[] = [];
     let id = 1;
     
     categories.forEach(category => {
@@ -48,7 +47,7 @@ export default function NewbornsCategory() {
           price: (Number(category.basePrice) + (i * 0.5)).toFixed(2),
           image: imagePath,
           category: category.displayName,
-          gender: "newborn", // 👈 ADDED: Gender field
+          gender: "newborn",
           imageError: false
         });
       }
@@ -69,233 +68,222 @@ export default function NewbornsCategory() {
     );
   };
   
-  // 👇 ADDED: CartProvider compatible add to cart function
   const handleAddToCart = (product: any) => {
     try {
-      // Use CartProvider's addToCart function
       addToCart({
-        id: product.id, // ✅ Number format mein
+        id: product.id,
         name: product.name,
         price: parseFloat(product.price),
         image: product.image,
         category: product.category,
-        gender: product.gender // ✅ Newborns category ka gender
+        gender: product.gender
       });
       
-      // Show feedback
       setAddedItems(prev => ({ ...prev, [product.id]: true }));
       
-      // Reset after 2 seconds
       setTimeout(() => {
         setAddedItems(prev => ({ ...prev, [product.id]: false }));
       }, 2000);
       
-      // Show success message
-      alert(`✓ ${product.name} added to cart!`);
+      alert(` ${product.name} added to cart!`);
       
     } catch (error) {
-      console.error('Error adding to cart:', error);
-      alert('Could not add item to cart. Please try again.');
+      console.error("Error adding to cart:", error);
+      alert("Could not add item to cart. Please try again.");
     }
   };
   
-  // Sirf 1 category hai, isliye filter buttons nahi dikhayenge
-  const filteredProducts = products; // No filtering needed for newborns
+  const filteredProducts = products;
 
   return (
     <div style={{ 
-      maxWidth: '1280px', 
-      margin: '0 auto', 
-      padding: '20px 16px',
-      width: '100%',
-      boxSizing: 'border-box'
+      maxWidth: "1280px", 
+      margin: "0 auto", 
+      padding: "20px 16px",
+      width: "100%",
+      boxSizing: "border-box"
     }}>
       <h1 style={{ 
-        fontSize: 'clamp(24px, 5vw, 36px)', 
-        fontWeight: 'bold', 
-        marginBottom: '8px',
-        textAlign: 'center'
+        fontSize: "clamp(24px, 5vw, 36px)", 
+        fontWeight: "bold", 
+        marginBottom: "8px",
+        textAlign: "center"
       }}>
         Newborns Collection
       </h1>
       <p style={{ 
-        color: '#6B7280', 
-        marginBottom: '8px',
-        fontSize: 'clamp(14px, 3vw, 16px)',
-        textAlign: 'center'
+        color: "#6B7280", 
+        marginBottom: "8px",
+        fontSize: "clamp(14px, 3vw, 16px)",
+        textAlign: "center"
       }}>
         Adorable baby dresses for your little ones
       </p>
       <p style={{ 
-        color: '#9CA3AF', 
-        fontSize: '14px', 
-        marginBottom: '32px',
-        textAlign: 'center'
+        color: "#9CA3AF", 
+        fontSize: "14px", 
+        marginBottom: "32px",
+        textAlign: "center"
       }}>
         {products.length} beautiful baby dresses available
       </p>
       
-      {/* ✅ Simple Stats Card - MOBILE RESPONSIVE */}
       <div style={{ 
-        marginBottom: '32px',
-        padding: '20px 16px',
-        background: 'linear-gradient(135deg, #FBBF24, #F59E0B)',
-        borderRadius: '12px',
-        color: 'white',
-        textAlign: 'center'
+        marginBottom: "32px",
+        padding: "20px 16px",
+        background: "linear-gradient(135deg, #FBBF24, #F59E0B)",
+        borderRadius: "12px",
+        color: "white",
+        textAlign: "center"
       }}>
         <div style={{ 
-          fontSize: 'clamp(36px, 8vw, 48px)', 
-          marginBottom: '8px' 
+          fontSize: "clamp(36px, 8vw, 48px)", 
+          marginBottom: "8px" 
         }}>
-          👶
+          
         </div>
         <div style={{ 
-          fontSize: 'clamp(20px, 5vw, 28px)', 
-          fontWeight: 'bold', 
-          marginBottom: '4px' 
+          fontSize: "clamp(20px, 5vw, 28px)", 
+          fontWeight: "bold", 
+          marginBottom: "4px" 
         }}>
           {products.length} Baby Dresses
         </div>
         <div style={{ 
-          fontSize: '13px', 
+          fontSize: "13px", 
           opacity: 0.9,
-          lineHeight: '1.4'
+          lineHeight: "1.4"
         }}>
           Size: 0-6 Months | Soft Cotton | Easy Care
         </div>
       </div>
       
-      {/* ✅ No Category Filter Buttons Needed (Sirf 1 category) */}
-      
-      {/* ✅ Products Grid - EXACTLY KIDS PAGE KI TARAH */}
       {filteredProducts.length > 0 ? (
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
-          gap: '25px'
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+          gap: "25px"
         }}>
           {filteredProducts.map(product => (
             <div key={product.id} style={{
-              background: 'white',
-              borderRadius: '12px',
-              overflow: 'hidden',
-              boxShadow: '0 4px 15px rgba(0,0,0,0.08)',
-              border: '2px solid #FBBF2420',
-              transition: 'transform 0.2s'
+              background: "white",
+              borderRadius: "12px",
+              overflow: "hidden",
+              boxShadow: "0 4px 15px rgba(0,0,0,0.08)",
+              border: "2px solid #FBBF2420",
+              transition: "transform 0.2s"
             }}>
               <div style={{
-                height: '250px',
-                position: 'relative',
-                background: '#FFFBEB'
+                height: "250px",
+                position: "relative",
+                background: "#FFFBEB"
               }}>
                 {!product.imageError ? (
                   <img 
                     src={product.image} 
                     alt={product.name}
                     style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'contain',
-                      objectPosition: 'center',
-                      padding: '10px'
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "contain",
+                      objectPosition: "center",
+                      padding: "10px"
                     }}
                     onError={() => handleImageError(product.id)}
                   />
                 ) : (
                   <div style={{
-                    width: '100%',
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '40px',
-                    color: '#FBBF24',
-                    background: '#FFFBEB'
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "40px",
+                    color: "#FBBF24",
+                    background: "#FFFBEB"
                   }}>
-                    <div>👗</div>
-                    <div style={{ fontSize: '14px', marginTop: '10px', color: '#92400E' }}>
+                    <div></div>
+                    <div style={{ fontSize: "14px", marginTop: "10px", color: "#92400E" }}>
                       Baby Dress
                     </div>
                   </div>
                 )}
                 
-                {/* 👈 ADDED: Added to Cart Badge */}
                 {addedItems[product.id] && (
                   <div style={{
-                    position: 'absolute',
-                    top: '10px',
-                    left: '10px',
-                    background: '#F59E0B',
-                    color: 'white',
-                    fontSize: '10px',
-                    fontWeight: 'bold',
-                    padding: '5px 10px',
-                    borderRadius: '4px',
+                    position: "absolute",
+                    top: "10px",
+                    left: "10px",
+                    background: "#F59E0B",
+                    color: "white",
+                    fontSize: "10px",
+                    fontWeight: "bold",
+                    padding: "5px 10px",
+                    borderRadius: "4px",
                     zIndex: 2
                   }}>
-                    ✓ Added
+                     Added
                   </div>
                 )}
               </div>
               
-              <div style={{ padding: '20px' }}>
+              <div style={{ padding: "20px" }}>
                 <h3 style={{ 
-                  fontSize: '16px', 
-                  fontWeight: '600', 
-                  marginBottom: '8px',
-                  color: '#1f2937'
+                  fontSize: "16px", 
+                  fontWeight: "600", 
+                  marginBottom: "8px",
+                  color: "#1f2937"
                 }}>
                   {product.name}
                 </h3>
                 <p style={{ 
-                  color: '#6B7280', 
-                  fontSize: '14px', 
-                  marginBottom: '12px'
+                  color: "#6B7280", 
+                  fontSize: "14px", 
+                  marginBottom: "12px"
                 }}>
                   <span style={{ 
-                    background: '#FEF3C7', 
-                    color: '#92400E', 
-                    padding: '4px 10px', 
-                    borderRadius: '10px',
-                    fontSize: '12px'
+                    background: "#FEF3C7", 
+                    color: "#92400E", 
+                    padding: "4px 10px", 
+                    borderRadius: "10px",
+                    fontSize: "12px"
                   }}>
                     Size: 0-6 Months
                   </span>
                 </p>
                 <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  borderTop: '1px solid #F3F4F6',
-                  paddingTop: '15px'
+                  display: "flex", 
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  borderTop: "1px solid #F3F4F6",
+                  paddingTop: "15px"
                 }}>
                   <div>
                     <span style={{ 
-                      fontSize: '18px', 
-                      fontWeight: 'bold', 
-                      color: '#92400E' 
+                      fontSize: "18px", 
+                      fontWeight: "bold", 
+                      color: "#92400E" 
                     }}>
                       ${product.price}
                     </span>
-                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>
+                    <div style={{ fontSize: "12px", color: "#9CA3AF" }}>
                       Free Shipping
                     </div>
                   </div>
                   <button 
-                    onClick={() => handleAddToCart(product)} // 👈 ADDED: onClick handler
+                    onClick={() => handleAddToCart(product)}
                     style={{
-                      background: addedItems[product.id] ? '#10B981' : '#FBBF24', // 👈 UPDATED: Color change on add
-                      color: addedItems[product.id] ? 'white' : '#92400E',
-                      border: 'none',
-                      padding: '8px 16px',
-                      borderRadius: '6px',
-                      fontWeight: '600',
-                      cursor: 'pointer'
+                      background: addedItems[product.id] ? "#10B981" : "#FBBF24",
+                      color: addedItems[product.id] ? "white" : "#92400E",
+                      border: "none",
+                      padding: "8px 16px",
+                      borderRadius: "6px",
+                      fontWeight: "600",
+                      cursor: "pointer"
                     }}
                   >
-                    {addedItems[product.id] ? '✓ Added' : 'Add to Cart'} {/* 👈 UPDATED: Text change */}
+                    {addedItems[product.id] ? " Added" : "Add to Cart"}
                   </button>
                 </div>
               </div>
@@ -303,56 +291,64 @@ export default function NewbornsCategory() {
           ))}
         </div>
       ) : (
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
-          <div style={{ fontSize: '48px', marginBottom: '20px' }}>
-            👶
+        <div style={{ textAlign: "center", padding: "60px 20px", color: "#6b7280" }}>
+          <div style={{ fontSize: "48px", marginBottom: "20px" }}>
+            
           </div>
-          <h3 style={{ fontSize: '20px', marginBottom: '10px' }}>
+          <h3 style={{ fontSize: "20px", marginBottom: "10px" }}>
             No baby products found
           </h3>
           <p>Check back soon for newborn essentials!</p>
         </div>
       )}
       
-      {/* Newborns Tips Section */}
       <div style={{
-        marginTop: '50px',
-        padding: '25px',
-        background: '#FFFBEB',
-        borderRadius: '12px',
-        borderLeft: '5px solid #FBBF24'
+        marginTop: "50px",
+        padding: "25px",
+        background: "#FFFBEB",
+        borderRadius: "12px",
+        borderLeft: "5px solid #FBBF24"
       }}>
         <h3 style={{ 
-          fontSize: '18px', 
-          fontWeight: 'bold', 
-          marginBottom: '15px',
-          color: '#92400E',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
+          fontSize: "18px", 
+          fontWeight: "bold", 
+          marginBottom: "15px",
+          color: "#92400E",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px"
         }}>
-          👶 Newborn Care Tips
+           Newborn Care Tips
         </h3>
         <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-          gap: '15px',
-          color: '#92400E'
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", 
+          gap: "15px",
+          color: "#92400E"
         }}>
-          <div style={{ fontSize: '14px' }}>
+          <div style={{ fontSize: "14px" }}>
             <strong>Soft Fabrics:</strong> 100% cotton for sensitive skin
           </div>
-          <div style={{ fontSize: '14px' }}>
+          <div style={{ fontSize: "14px" }}>
             <strong>Easy Dressing:</strong> Snap buttons for quick changes
           </div>
-          <div style={{ fontSize: '14px' }}>
+          <div style={{ fontSize: "14px" }}>
             <strong>Size Guide:</strong> 0-3M, 3-6M, 6-9M available
           </div>
-          <div style={{ fontSize: '14px' }}>
+          <div style={{ fontSize: "14px" }}>
             <strong>Machine Washable:</strong> Easy care for busy parents
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+// Main export with Suspense
+export default function NewbornsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <NewbornsPageContent />
+    </Suspense>
   );
 }

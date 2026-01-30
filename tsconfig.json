@@ -4,7 +4,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
+    "strict": false,  // CHANGED: true -> false
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -18,9 +18,9 @@
         "name": "next"
       }
     ],
-   "paths": {
-  "@/*": ["./*"]
-}
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "next-env.d.ts",

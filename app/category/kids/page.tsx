@@ -1,11 +1,12 @@
-// app/category/kids/page.tsx - WITH CARTPROVIDER - LIGHT GREY CARDS
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useCart } from '@/components/providers/CartProvider'; // 👈 ADD THIS
+import { useCart } from '@/components/providers/CartProvider';
+import { Suspense } from 'react';
 
-export default function KidsCategory() {
+// Create a separate component for the content
+function KidsPageContent() {
   const searchParams = useSearchParams();
   const queryCategory = searchParams.get('category');
   
@@ -13,7 +14,6 @@ export default function KidsCategory() {
   const [selectedGender, setSelectedGender] = useState<string>('all');
   const [addedItems, setAddedItems] = useState<{[key: number]: boolean}>({});
   
-  // 👇 USE CARTPROVIDER HOOK
   const { addToCart } = useCart();
   
   useEffect(() => {
@@ -26,7 +26,6 @@ export default function KidsCategory() {
   
   const generateProducts = () => {
     const categories = [
-      // BOYS SECTION
       { 
         displayName: "Jackets", 
         folder: "jackets", 
@@ -63,8 +62,6 @@ export default function KidsCategory() {
         gender: "boys",
         startFrom: 1
       },
-      
-      // GIRLS SECTION
       { 
         displayName: "Dresses", 
         folder: "dress", 
@@ -103,7 +100,7 @@ export default function KidsCategory() {
       }
     ];
     
-    let products = [];
+    let products: any[] = [];
     let id = 1;
     
     categories.forEach(category => {
@@ -112,7 +109,7 @@ export default function KidsCategory() {
         
         products.push({
           id: id++,
-          name: `${category.gender === 'boys' ? "Boy's" : "Girl's"} ${category.displayName} ${i}`,
+          name: `${category.gender === 'boys' ? "Boy'\''s" : "Girl'\''s"} ${category.displayName} ${i}`,
           price: (Number(category.basePrice) + ((i - category.startFrom + 1) * 0.3)).toFixed(2),
           image: imagePath,
           category: category.displayName,
@@ -137,29 +134,24 @@ export default function KidsCategory() {
     );
   };
   
-  // 👇 UPDATED ADD TO CART FUNCTION
   const handleAddToCart = (product: any) => {
     try {
-      // Use CartProvider's addToCart function
       addToCart({
-        id: product.id, // ✅ FIXED: Number bhejein (string nahi)
+        id: product.id,
         name: product.name,
         price: parseFloat(product.price),
         image: product.image,
         category: product.category,
-        gender: product.gender // ✅ ADDED: Gender include karein
+        gender: product.gender
       });
       
-      // Show feedback
       setAddedItems(prev => ({ ...prev, [product.id]: true }));
       
-      // Reset after 2 seconds
       setTimeout(() => {
         setAddedItems(prev => ({ ...prev, [product.id]: false }));
       }, 2000);
       
-      // Show success message
-      alert(`✓ ${product.name} added to cart!`);
+      alert(` ${product.name} added to cart!`);
       
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -167,17 +159,14 @@ export default function KidsCategory() {
     }
   };
   
-  // Get unique categories
   const categories = ["All", ...Array.from(new Set(products.map(p => p.category)))];
   
-  // Filter products
   const filteredProducts = products.filter(product => {
     const categoryMatch = !selectedCategory || selectedCategory === "All" || product.category === selectedCategory;
     const genderMatch = selectedGender === 'all' || product.gender === selectedGender;
     return categoryMatch && genderMatch;
   });
 
-  // Calculate counts
   const boysCount = products.filter(p => p.gender === 'boys').length;
   const girlsCount = products.filter(p => p.gender === 'girls').length;
   const totalCount = products.length;
@@ -207,7 +196,7 @@ export default function KidsCategory() {
         Boys & Girls - Jackets, Shirts, Trousers, T-Shirts, Dresses, Twinning Sets
       </p>
       
-      {/* Gender Filter - MOBILE RESPONSIVE */}
+      {/* Gender Filter */}
       <div style={{ 
         display: 'flex', 
         gap: '8px', 
@@ -273,7 +262,7 @@ export default function KidsCategory() {
         </button>
       </div>
       
-      {/* Category Filter Buttons - MOBILE RESPONSIVE */}
+      {/* Category Filter Buttons */}
       <div style={{ 
         display: 'flex', 
         flexWrap: 'wrap', 
@@ -315,7 +304,7 @@ export default function KidsCategory() {
         })}
       </div>
       
-      {/* Active Filters Display - MOBILE RESPONSIVE */}
+      {/* Active Filters Display */}
       {(selectedGender !== 'all' || selectedCategory) && (
         <div style={{ 
           marginBottom: '20px', 
@@ -331,7 +320,7 @@ export default function KidsCategory() {
           <div>
             <span style={{ fontWeight: 'bold', color: '#10B981', fontSize: '15px' }}>
               {selectedGender === 'all' ? 'All Kids' : selectedGender === 'boys' ? 'Boys' : 'Girls'} 
-              {selectedCategory && selectedCategory !== "All" ? ` • ${selectedCategory}` : ''}
+              {selectedCategory && selectedCategory !== "All" ? `  ${selectedCategory}` : ''}
             </span>
             <span style={{ display: 'block', marginTop: '4px', color: '#6B7280' }}>
               ({filteredProducts.length} products)
@@ -358,7 +347,7 @@ export default function KidsCategory() {
         </div>
       )}
       
-      {/* ✅ Products Grid - LIGHT GREY CARDS */}
+      {/* Products Grid */}
       {filteredProducts.length > 0 ? (
         <div style={{
           display: 'grid',
@@ -400,12 +389,12 @@ export default function KidsCategory() {
                     fontSize: '40px',
                     color: '#d1d5db'
                   }}>
-                    {product.category === 'Jackets' && '🧥'}
-                    {product.category === 'Shirts' && '👔'}
-                    {product.category === 'Trousers' && '👖'}
-                    {product.category === 'T-Shirts' && '👕'}
-                    {product.category === 'Dresses' && '👗'}
-                    {product.category === 'Twinning' && '👭'}
+                    {product.category === 'Jackets' && ''}
+                    {product.category === 'Shirts' && ''}
+                    {product.category === 'Trousers' && ''}
+                    {product.category === 'T-Shirts' && ''}
+                    {product.category === 'Dresses' && ''}
+                    {product.category === 'Twinning' && ''}
                   </div>
                 )}
                 
@@ -423,7 +412,7 @@ export default function KidsCategory() {
                     borderRadius: '4px',
                     zIndex: 2
                   }}>
-                    ✓ Added
+                     Added
                   </div>
                 )}
               </div>
@@ -452,7 +441,7 @@ export default function KidsCategory() {
                       opacity: addedItems[product.id] ? 0.8 : 1
                     }}
                   >
-                    {addedItems[product.id] ? '✓ Added' : 'Add to Cart'}
+                    {addedItems[product.id] ? ' Added' : 'Add to Cart'}
                   </button>
                 </div>
               </div>
@@ -462,7 +451,7 @@ export default function KidsCategory() {
       ) : (
         <div style={{ textAlign: 'center', padding: '60px 20px', color: '#6b7280' }}>
           <div style={{ fontSize: '48px', marginBottom: '20px' }}>
-            {selectedGender === 'boys' ? '👦' : selectedGender === 'girls' ? '👧' : '👶'}
+            {selectedGender === 'boys' ? '' : selectedGender === 'girls' ? '' : ''}
           </div>
           <h3 style={{ fontSize: '20px', marginBottom: '10px' }}>
             No products found
@@ -489,5 +478,14 @@ export default function KidsCategory() {
         </div>
       )}
     </div>
+  );
+}
+
+// Main export with Suspense
+export default function KidsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <KidsPageContent />
+    </Suspense>
   );
 }
