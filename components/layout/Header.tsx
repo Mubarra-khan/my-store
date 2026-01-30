@@ -4,13 +4,15 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import AuthButtons from "@/components/auth/AuthButtons";
 import { useCart } from "@/components/providers/CartProvider";
-import { Menu, X, ShoppingBag, User } from "lucide-react";
+import { Menu, X, Search, ShoppingBag, User } from "lucide-react";
 
 const Header = () => {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [mobileView, setMobileView] = useState(false);
-
+  
   // 🔑 exact position state
   const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0 });
 
@@ -50,6 +52,21 @@ const Header = () => {
     newborns: [{ name: "Baby Dresses", href: "/category/newborns" }],
   };
 
+  const handleSearch = () => {
+    if (!searchQuery.trim()) {
+      alert('Please enter something to search');
+      return;
+    }
+    const searchTerm = encodeURIComponent(searchQuery.trim());
+    window.location.href = `/search?q=${searchTerm}`;
+    setShowSearch(false);
+    setSearchQuery('');
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleSearch();
+  };
+
   // ✅ EXACT POSITION HANDLER
   const openDropdown = (
     key: string,
@@ -67,7 +84,25 @@ const Header = () => {
 
   return (
     <>
-      {mobileView && (
+      {/* Top Bar - Hidden on Mobile */}
+      <div className="bg-gray-900 text-white text-sm py-2 hidden md:block">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center">
+            <span>✨ Free shipping on orders over $50</span>
+            <div className="flex gap-6">
+              <Link href="/support" className="text-white hover:text-gray-300 transition">
+                Support
+              </Link>
+              <Link href="/track-order" className="text-white hover:text-gray-300 transition">
+                Track Order
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MOBILE HEADER (only shows on mobile) */}
+      {mobileView ? (
         <div className="bg-white border-b sticky top-0 z-50">
           {/* top bar */}
           <div className="flex items-center justify-between px-3 py-3">
@@ -83,6 +118,11 @@ const Header = () => {
             </Link>
 
             <div className="flex gap-3 items-center">
+              {/* Search Button for Mobile */}
+              <button onClick={() => setShowSearch(true)}>
+                🔍
+              </button>
+              
               <Link href="/cart" className="relative">
                 <ShoppingBag size={20} />
                 {cartCount > 0 && (
@@ -99,12 +139,11 @@ const Header = () => {
 
           {/* category row */}
           <div className="border-t px-3 py-2 flex gap-4 overflow-x-auto text-sm">
-            {/* HOME */}
-<Link href="/" className="whitespace-nowrap font-medium">
-  Home
-</Link>
-
-{["men", "women", "kids", "newborns"].map((key) => (
+            <Link href="/" className="whitespace-nowrap font-medium">
+              Home
+            </Link>
+            
+            {["men", "women", "kids", "newborns"].map((key) => (
               <button
                 key={key}
                 onClick={(e) => openDropdown(key, e)}
@@ -114,15 +153,128 @@ const Header = () => {
               </button>
             ))}
 
-            <Link href="/sale" className="text-red-600 font-bold">
+            <Link href="/sale" className="text-red-600 font-bold whitespace-nowrap">
               Sale
             </Link>
           </div>
         </div>
+      ) : (
+        /* DESKTOP HEADER (unchanged) */
+        <>
+          <header className="bg-white shadow-sm sticky top-0 z-50">
+            <div className="container mx-auto px-4">
+              <div className="flex items-center justify-between py-4">
+                {/* Logo */}
+                <Link href="/" className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent">
+                  StyleStore
+                </Link>
+
+                {/* Desktop Navigation */}
+                <nav className="hidden lg:flex items-center space-x-1">
+                  <Link href="/" className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg">
+                    Home
+                  </Link>
+
+                  {/* Men Dropdown */}
+                  <div className="relative"
+                    onMouseEnter={() => setActiveDropdown('men')}
+                    onMouseLeave={() => setActiveDropdown(null)}>
+                    <button className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg flex items-center">
+                      Men ▾
+                    </button>
+                    {activeDropdown === 'men' && (
+                      <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-10">
+                        {categories.men.map((item) => (
+                          <Link key={item.name} href={item.href}
+                            className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                            onClick={() => setActiveDropdown(null)}>
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Women Dropdown */}
+                  <div className="relative"
+                    onMouseEnter={() => setActiveDropdown('women')}
+                    onMouseLeave={() => setActiveDropdown(null)}>
+                    <button className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg flex items-center">
+                      Women ▾
+                    </button>
+                    {activeDropdown === 'women' && (
+                      <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-10">
+                        {categories.women.map((item) => (
+                          <Link key={item.name} href={item.href}
+                            className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                            onClick={() => setActiveDropdown(null)}>
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Kids Dropdown */}
+                  <div className="relative"
+                    onMouseEnter={() => setActiveDropdown('kids')}
+                    onMouseLeave={() => setActiveDropdown(null)}>
+                    <button className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg flex items-center">
+                      Kids ▾
+                    </button>
+                    {activeDropdown === 'kids' && (
+                      <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg py-2 min-w-[200px] z-10">
+                        {categories.kids.map((item) => (
+                          <Link key={item.name} href={item.href}
+                            className="block px-4 py-2 hover:bg-gray-50 text-gray-700"
+                            onClick={() => setActiveDropdown(null)}>
+                            {item.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <Link href="/category/newborns" className="px-4 py-2 text-gray-700 hover:text-purple-600 transition rounded-lg">
+                    Newborns
+                  </Link>
+
+                  <Link href="/sale" className="px-4 py-2 text-red-500 font-bold hover:text-red-600 transition rounded-lg">
+                    🏷️ Sale
+                  </Link>
+                </nav>
+
+                {/* Actions */}
+                <div className="flex items-center space-x-4 md:space-x-6">
+                  <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2">
+                    {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                  </button>
+
+                  <button onClick={() => setShowSearch(true)} className="p-2 hover:text-purple-600 transition">
+                    🔍
+                  </button>
+
+                  <div className="hidden md:block">
+                    <AuthButtons />
+                  </div>
+
+                  <Link href="/cart" className="relative p-2 hover:text-purple-600 transition">
+                    <ShoppingBag size={20} />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-purple-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {cartCount > 9 ? '9+' : cartCount}
+                      </span>
+                    )}
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </header>
+        </>
       )}
 
       {/* 🔥 DROPDOWN — EXACT BUTTON KE NEECHE */}
-      {activeDropdown && (
+      {activeDropdown && mobileView && (
         <div
           className="fixed z-[9999]"
           style={{
@@ -131,7 +283,7 @@ const Header = () => {
             transform: "translateX(-50%)",
           }}
         >
-          <div className="mx-40 bg-white rounded-xl shadow-xl border max-h-[70vh] overflow-y-auto">
+          <div className="mx-4 bg-white rounded-xl shadow-xl border max-h-[70vh] overflow-y-auto">
             {categories[activeDropdown as keyof typeof categories].map(
               (item) => (
                 <Link
@@ -149,15 +301,57 @@ const Header = () => {
       )}
 
       {/* hamburger menu */}
-      {isMobileMenuOpen && (
+      {isMobileMenuOpen && mobileView && (
         <div className="fixed inset-0 top-[90px] bg-white z-[9999] p-4">
-          <Link href="/category/men" className="block py-3">Men</Link>
-          <Link href="/category/women" className="block py-3">Women</Link>
-          <Link href="/category/kids" className="block py-3">Kids</Link>
-          <Link href="/category/newborns" className="block py-3">Newborns</Link>
-          <Link href="/sale" className="block py-3 text-red-600 font-bold">Sale</Link>
+          <Link href="/category/men" className="block py-3" onClick={() => setIsMobileMenuOpen(false)}>Men</Link>
+          <Link href="/category/women" className="block py-3" onClick={() => setIsMobileMenuOpen(false)}>Women</Link>
+          <Link href="/category/kids" className="block py-3" onClick={() => setIsMobileMenuOpen(false)}>Kids</Link>
+          <Link href="/category/newborns" className="block py-3" onClick={() => setIsMobileMenuOpen(false)}>Newborns</Link>
+          <Link href="/sale" className="block py-3 text-red-600 font-bold" onClick={() => setIsMobileMenuOpen(false)}>Sale</Link>
+          <Link href="/orders" className="block py-3" onClick={() => setIsMobileMenuOpen(false)}>My Orders</Link>
           <div className="pt-6">
             <AuthButtons />
+          </div>
+        </div>
+      )}
+
+      {/* Search Modal */}
+      {showSearch && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl w-full max-w-lg">
+            <div className="p-4 border-b flex justify-between items-center">
+              <h3 className="text-lg font-bold">🔍 Search Products</h3>
+              <button onClick={() => setShowSearch(false)} className="p-2">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-4">
+              <div className="flex gap-2 mb-4">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  className="flex-1 p-3 border rounded-lg"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  autoFocus
+                />
+                <button onClick={handleSearch} className="bg-purple-600 text-white px-4 rounded-lg">
+                  Search
+                </button>
+              </div>
+              
+              <div className="text-sm text-gray-600 mb-2">Quick Categories:</div>
+              <div className="flex flex-wrap gap-2">
+                {['Jackets', 'Dresses', 'T-Shirts', 'Suits', 'Trousers'].map((cat) => (
+                  <button key={cat} onClick={() => setSearchQuery(cat)}
+                    className="px-3 py-1 bg-gray-100 rounded-full text-sm">
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       )}
